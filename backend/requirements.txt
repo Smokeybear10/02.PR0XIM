@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+google-generativeai
+pdfplumber
+pypdf
+pdfminer.six
+python-docx
+pandas
+openpyxl
+requests
+nltk
+scikit-learn
+numpy
+reportlab
+pydantic

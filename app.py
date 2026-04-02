@@ -39,8 +39,8 @@ import datetime
 
 # Set page config at the very beginning
 st.set_page_config(
-    page_title="Smart Resume AI",
-    page_icon="🚀",
+    page_title="SmartCV",
+    page_icon=">",
     layout="wide"
 )
 
@@ -79,13 +79,13 @@ class ResumeApp:
             st.session_state.is_admin = False
 
         self.pages = {
-            "🏠 HOME": self.render_home,
-            "🔍 RESUME ANALYZER": self.render_analyzer,
-            "📝 RESUME BUILDER": self.render_builder,
-            "📊 DASHBOARD": self.render_dashboard,
-            "🎯 JOB SEARCH": self.render_job_search,
-            "💬 FEEDBACK": self.render_feedback_page,
-            "ℹ️ ABOUT": self.render_about
+            "Home": self.render_home,
+            "Resume Analyzer": self.render_analyzer,
+            "Resume Builder": self.render_builder,
+            "Dashboard": self.render_dashboard,
+            "Job Search": self.render_job_search,
+            "Feedback": self.render_feedback_page,
+            "About": self.render_about
         }
 
         # Initialize dashboard manager
@@ -111,7 +111,7 @@ class ResumeApp:
 
         # Load Google Fonts
         st.markdown("""
-            <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         """, unsafe_allow_html=True)
 
@@ -134,369 +134,126 @@ class ResumeApp:
     def apply_global_styles(self):
         st.markdown("""
         <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
+        /* Manuscript + Single-Color overrides */
+        .main .block-container { padding-top: 2rem; padding-bottom: 2rem; }
 
-        ::-webkit-scrollbar-track {
-            background: #1a1a1a;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #4CAF50;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #45a049;
-        }
-
-        /* Global Styles */
         .main-header {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+            background: #111111;
+            border: 1px solid #1E3A1E;
+            border-radius: 0px;
+            padding: 24px;
+            margin-bottom: 24px;
         }
-
-        .main-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.1) 100%);
-            z-index: 1;
-        }
-
         .main-header h1 {
-            color: white;
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin: 0;
-            position: relative;
-            z-index: 2;
+            color: #33FF33;
+            font-size: 28px;
+            font-weight: 400;
+            font-family: "JetBrains Mono", monospace;
         }
 
-        /* Template Card Styles */
         .template-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            padding: 1rem;
+            gap: 16px;
+            padding: 8px;
         }
-
         .template-card {
-            background: rgba(45, 45, 45, 0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #111111;
+            border-radius: 0px;
+            padding: 24px;
+            border: 1px solid #1E3A1E;
+            transition: border-color 120ms ease-out;
         }
+        .template-card:hover { border-color: #116611; }
 
-        .template-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border-color: #4CAF50;
-        }
+        .template-icon { font-size: 24px; color: #33FF33; margin-bottom: 12px; }
+        .template-title { font-size: 16px; font-weight: 500; color: #33FF33; font-family: "JetBrains Mono", monospace; }
+        .template-description { color: #22AA22; font-size: 14px; line-height: 1.6; font-family: "JetBrains Mono", monospace; }
 
-        .template-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent 0%, rgba(76,175,80,0.1) 100%);
-            z-index: 1;
-        }
+        .feature-list { list-style: none; padding: 0; margin: 8px 0; }
+        .feature-item { display: flex; align-items: center; margin-bottom: 8px; color: #22AA22; font-size: 14px; font-family: "JetBrains Mono", monospace; }
+        .feature-icon { color: #33FF33; margin-right: 10px; }
 
-        .template-icon {
-            font-size: 3rem;
-            color: #4CAF50;
-            margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .template-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .template-description {
-            color: #aaa;
-            margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 2;
-            line-height: 1.6;
-        }
-
-        /* Feature List Styles */
-        .feature-list {
-            list-style: none;
-            padding: 0;
-            margin: 1.5rem 0;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-            color: #ddd;
-            font-size: 0.95rem;
-        }
-
-        .feature-icon {
-            color: #4CAF50;
-            margin-right: 0.8rem;
-            font-size: 1.1rem;
-        }
-
-        /* Button Styles */
         .action-button {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
+            background: #33FF33;
+            color: #0A0A0A;
+            padding: 10px 24px;
+            border-radius: 0px;
             border: none;
             font-weight: 500;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 13px;
+            letter-spacing: 0.5px;
             cursor: pointer;
             width: 100%;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-            z-index: 2;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 120ms ease-out;
         }
+        .action-button:hover { opacity: 0.9; }
 
-        .action-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(76,175,80,0.3);
-        }
-
-        .action-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-            transition: all 0.6s ease;
-        }
-
-        .action-button:hover::before {
-            left: 100%;
-        }
-
-        /* Form Section Styles */
         .form-section {
-            background: rgba(45, 45, 45, 0.9);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: #111111;
+            border-radius: 0px;
+            padding: 24px;
+            margin: 16px 0;
+            border: 1px solid #1E3A1E;
         }
-
         .form-section-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 2px solid #4CAF50;
+            font-size: 18px;
+            font-weight: 400;
+            color: #33FF33;
+            font-family: "JetBrains Mono", monospace;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #1E3A1E;
         }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            color: #ddd;
-            font-weight: 500;
-            margin-bottom: 0.8rem;
-            display: block;
-        }
-
+        .form-label { color: #22AA22; font-weight: 400; font-size: 13px; font-family: "JetBrains Mono", monospace; }
         .form-input {
             width: 100%;
-            padding: 1rem;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(30, 30, 30, 0.9);
-            color: white;
-            transition: all 0.3s ease;
+            padding: 12px 16px;
+            border-radius: 0px;
+            border: 1px solid #1E3A1E;
+            background: #1A1A1A;
+            color: #33FF33;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 14px;
         }
+        .form-input:focus { border-color: #33FF33; outline: none; }
 
-        .form-input:focus {
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 2px rgba(76,175,80,0.2);
-            outline: none;
-        }
-
-        /* Skill Tags */
-        .skill-tag-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            margin-top: 1rem;
-        }
-
+        .skill-tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
         .skill-tag {
-            background: rgba(76,175,80,0.1);
-            color: #4CAF50;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            border: 1px solid #4CAF50;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            background: #1A1A1A;
+            color: #33FF33;
+            padding: 6px 12px;
+            border-radius: 0px;
+            border: 1px solid #1E3A1E;
+            font-size: 13px;
+            font-family: "JetBrains Mono", monospace;
+            transition: border-color 120ms ease-out;
         }
+        .skill-tag:hover { border-color: #33FF33; color: #33FF33; }
 
-        .skill-tag:hover {
-            background: #4CAF50;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76,175,80,0.2);
-        }
+        .progress-text { color: #33FF33; font-family: "JetBrains Mono", monospace; font-weight: 600; }
 
-        /* Progress Circle */
-        .progress-container {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            margin: 2rem auto;
-        }
-
-        .progress-circle {
-            transform: rotate(-90deg);
-            width: 100%;
-            height: 100%;
-        }
-
-        .progress-circle circle {
-            fill: none;
-            stroke-width: 8;
-            stroke-linecap: round;
-            stroke: #4CAF50;
-            transform-origin: 50% 50%;
-            transition: all 0.3s ease;
-        }
-
-        .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: white;
-        }
-        .main .block-container {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-        }
         .feature-card {
-            background-color: #1e1e1e;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Animations */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-slide-in {
-            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .template-container {
-                grid-template-columns: 1fr;
-            }
-
-            .main-header {
-                padding: 1.5rem;
-            }
-
-            .main-header h1 {
-                font-size: 2rem;
-            }
-
-            .template-card {
-                padding: 1.5rem;
-            }
-
-            .action-button {
-                padding: 0.8rem 1.6rem;
-            }
+            background: #111111;
+            border-radius: 0px;
+            padding: 24px;
+            margin-bottom: 12px;
+            border: 1px solid #1E3A1E;
         }
         </style>
         """, unsafe_allow_html=True)
         
     def add_footer(self):
         """Add a footer to all pages"""
-        st.markdown("<hr style='margin-top: 50px; margin-bottom: 20px;'>", unsafe_allow_html=True)
-        
-        col1, col2, col3 = st.columns([1, 3, 1])
-        
-        with col2:
-            # GitHub star button with lottie animation
-            st.markdown("""
-            <div style='display: flex; justify-content: center; align-items: center; margin-bottom: 10px;'>
-                <a href='https://github.com/Hunterdii/Smart-AI-Resume-Analyzer' target='_blank' style='text-decoration: none;'>
-                    <div style='display: flex; align-items: center; background-color: #24292e; padding: 5px 10px; border-radius: 5px; transition: all 0.3s ease;'>
-                        <svg height="16" width="16" viewBox="0 0 16 16" version="1.1" style='margin-right: 5px;'>
-                            <path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" fill="gold"></path>
-                        </svg>
-                        <span style='color: white; font-size: 14px;'>Star this repo</span>
-                    </div>
-                </a>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Footer text
-            st.markdown("""
-            <p style='text-align: center;'>
-                Powered by <b>Streamlit</b> and <b>Google Gemini AI</b> | Developed by 
-                <a href="https://www.linkedin.com/in/patel-hetkumar-sandipbhai-8b110525a/" target="_blank" style='text-decoration: none; color: #FFFFFF'>
-                    <b>Het Patel (Hunterdii)</b>
-                </a>
-            </p>
-            <p style='text-align: center; font-size: 12px; color: #888888;'>
-                "Every star counts! If you find this project helpful, please consider starring the repo to help it reach more people."
-            </p>
-            """, unsafe_allow_html=True)
+        st.markdown("<hr style='margin-top: 48px; margin-bottom: 16px; border-color: #1E3A1E;'>", unsafe_allow_html=True)
+
+        st.markdown("""
+        <div style='text-align: center; font-family: "JetBrains Mono", monospace; font-size: 12px; color: #116611; padding: 16px 0;'>
+            SmartCV &middot; Powered by Streamlit + Gemini AI
+        </div>
+        """, unsafe_allow_html=True)
 
     def load_image(self, image_name):
         """Load image from static directory"""
@@ -547,14 +304,13 @@ class ResumeApp:
         """Render the dashboard page"""
         self.dashboard_manager.render_dashboard()
 
-        st.toast("Check out these repositories: [Awesome Hacking](https://github.com/Hunterdii/Awesome-Hacking)", icon="ℹ️")
 
 
     def render_empty_state(self, icon, message):
         """Render an empty state with icon and message"""
         return f"""
-            <div style='text-align: center; padding: 2rem; color: #666;'>
-                <i class='{icon}' style='font-size: 2rem; margin-bottom: 1rem; color: #00bfa5;'></i>
+            <div style='text-align: center; padding: 2rem; color: #116611;'>
+                <i class='{icon}' style='font-size: 2rem; margin-bottom: 1rem; color: #33FF33;'></i>
                 <p style='margin: 0;'>{message}</p>
             </div>
         """
@@ -595,14 +351,14 @@ class ResumeApp:
         return False
 
     def render_builder(self):
-        st.title("Resume Builder 📝")
+        st.title("RESUME BUILDER")
         st.write("Create your professional resume")
 
         # Template selection
         template_options = ["Modern", "Professional", "Minimal", "Creative"]
         selected_template = st.selectbox(
     "Select Resume Template", template_options)
-        st.success(f"🎨 Currently using: {selected_template} Template")
+        st.success(f"> Currently using: {selected_template} Template")
 
         # Personal Information
         st.subheader("Personal Information")
@@ -895,7 +651,7 @@ class ResumeApp:
         })
 
         # Generate Resume button
-        if st.button("Generate Resume 📄", type="primary"):
+        if st.button("Generate Resume >", type="primary"):
             print("Validating form data...")
             print(f"Session state form data: {st.session_state.form_data}")
             print(
@@ -914,11 +670,11 @@ class ResumeApp:
 
             # Validate required fields
             if not current_name:
-                st.error("⚠️ Please enter your full name.")
+                st.error("[WARN] Please enter your full name.")
                 return
 
             if not current_email:
-                st.error("⚠️ Please enter your email address.")
+                st.error("[WARN] Please enter your email address.")
                 return
 
             # Update email in form data one final time
@@ -953,13 +709,13 @@ class ResumeApp:
                             save_resume_data(resume_data)
 
                             # Offer the resume for download
-                            st.success("✅ Resume generated successfully!")
+                            st.success("[OK] Resume generated successfully!")
 
                             # Show snowflake effect
                             st.snow()
 
                             st.download_button(
-                                label="Download Resume 📥",
+                                label="Download Resume >",
                                 data=resume_buffer,
                                 file_name=f"{
     current_name.replace(
@@ -973,13 +729,13 @@ class ResumeApp:
         str(db_error)}")
                             # Still allow download even if database save fails
                             st.warning(
-                                "⚠️ Resume generated but couldn't be saved to database")
+                                "[WARN] Resume generated but couldn't be saved to database")
                             
                             # Show balloons effect
                             st.balloons()
 
                             st.download_button(
-                                label="Download Resume 📥",
+                                label="Download Resume >",
                                 data=resume_buffer,
                                 file_name=f"{
     current_name.replace(
@@ -989,19 +745,18 @@ class ResumeApp:
                             )
                     else:
                         st.error(
-                            "❌ Failed to generate resume. Please try again.")
+                            "[ERR] Failed to generate resume. Please try again.")
                         print("Resume buffer was None")
                 except Exception as gen_error:
                     print(f"Error during resume generation: {str(gen_error)}")
                     print(f"Full traceback: {traceback.format_exc()}")
-                    st.error(f"❌ Error generating resume: {str(gen_error)}")
+                    st.error(f"[ERR] Error generating resume: {str(gen_error)}")
 
             except Exception as e:
                 print(f"Error preparing resume data: {str(e)}")
                 print(f"Full traceback: {traceback.format_exc()}")
-                st.error(f"❌ Error preparing resume data: {str(e)}")
+                st.error(f"[ERR] Error preparing resume data: {str(e)}")
 
-        st.toast("Check out these repositories: [30-Days-Of-Rust](https://github.com/Hunterdii/30-Days-Of-Rust)", icon="ℹ️")
 
     def render_about(self):
         """Render the about page"""
@@ -1030,125 +785,105 @@ class ResumeApp:
 
         # Add Font Awesome icons and custom CSS
         st.markdown("""
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
             <style>
-                .profile-section, .vision-section, .feature-card {
+                .profile-section, .vision-section {
                     text-align: center;
-                    padding: 2rem;
-                    background: rgba(45, 45, 45, 0.9);
-                    border-radius: 20px;
-                    margin: 2rem auto;
+                    padding: 32px 24px;
+                    background: #111111;
+                    border: 1px solid #1E3A1E;
+                    border-radius: 0px;
+                    margin: 24px auto;
                     max-width: 800px;
                 }
-
                 .profile-image {
                     width: 200px;
                     height: 200px;
                     border-radius: 50%;
-                    margin: 0 auto 1.5rem;
+                    margin: 0 auto 16px;
                     display: block;
                     object-fit: cover;
-                    border: 4px solid #4CAF50;
+                    border: 3px solid #33FF33;
                 }
-
                 .profile-name {
-                    font-size: 2.5rem;
-                    color: white;
-                    margin-bottom: 0.5rem;
+                    font-size: 28px;
+                    color: #33FF33;
+                    font-family: "JetBrains Mono", monospace;
+                    font-weight: 400;
                 }
-
                 .profile-title {
-                    font-size: 1.2rem;
-                    color: #4CAF50;
-                    margin-bottom: 1.5rem;
+                    font-size: 14px;
+                    color: #22AA22;
+                    font-family: "JetBrains Mono", monospace;
                 }
-
                 .social-links {
                     display: flex;
                     justify-content: center;
-                    gap: 1.5rem;
-                    margin: 2rem 0;
+                    gap: 12px;
+                    margin: 20px 0;
                 }
-
                 .social-link {
-                    font-size: 2rem;
-                    color: #4CAF50;
-                    transition: all 0.3s ease;
-                    padding: 0.5rem;
-                    border-radius: 50%;
-                    background: rgba(76, 175, 80, 0.1);
-                    width: 60px;
-                    height: 60px;
+                    font-size: 18px;
+                    color: #22AA22;
+                    padding: 10px;
+                    border: 1px solid #1E3A1E;
+                    border-radius: 0px;
+                    background: #1A1A1A;
+                    width: 44px;
+                    height: 44px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     text-decoration: none;
+                    transition: all 120ms ease-out;
                 }
-
                 .social-link:hover {
-                    transform: translateY(-5px);
-                    background: #4CAF50;
-                    color: white;
-                    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+                    border-color: #33FF33;
+                    color: #33FF33;
                 }
-
                 .bio-text {
-                    color: #ddd;
-                    line-height: 1.8;
-                    font-size: 1.1rem;
-                    margin-top: 2rem;
+                    color: #22AA22;
+                    line-height: 1.6;
+                    font-size: 15px;
+                    font-family: "JetBrains Mono", monospace;
+                    margin-top: 20px;
                     text-align: left;
                 }
-
                 .vision-text {
-                    color: #ddd;
-                    line-height: 1.8;
-                    font-size: 1.1rem;
+                    color: #22AA22;
+                    line-height: 1.6;
+                    font-size: 15px;
+                    font-family: "JetBrains Mono", monospace;
                     font-style: italic;
-                    margin: 1.5rem 0;
+                    margin: 16px 0;
                     text-align: left;
                 }
-
-                .vision-icon {
-                    font-size: 2.5rem;
-                    color: #4CAF50;
-                    margin-bottom: 1rem;
-                }
-
+                .vision-icon { font-size: 24px; color: #33FF33; margin-bottom: 12px; }
                 .vision-title {
-                    font-size: 2rem;
-                    color: white;
-                    margin-bottom: 1rem;
+                    font-size: 22px;
+                    color: #33FF33;
+                    font-family: "JetBrains Mono", monospace;
+                    font-weight: 400;
                 }
-
                 .features-grid {
                     display: grid;
                     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                    gap: 2rem;
-                    margin: 2rem auto;
+                    gap: 16px;
+                    margin: 24px auto;
                     max-width: 1200px;
                 }
-
-                .feature-card {
-                    padding: 2rem;
-                    margin: 0;
-                }
-
-                .feature-icon {
-                    font-size: 2.5rem;
-                    color: #4CAF50;
-                    margin-bottom: 1rem;
-                }
-
+                .feature-card { padding: 24px; margin: 0; background: #111111; border: 1px solid #1E3A1E; border-radius: 0px; }
+                .feature-icon { font-size: 24px; color: #33FF33; margin-bottom: 12px; }
                 .feature-title {
-                    font-size: 1.5rem;
-                    color: white;
-                    margin: 1rem 0;
+                    font-size: 16px;
+                    color: #33FF33;
+                    font-family: "JetBrains Mono", monospace;
+                    font-weight: 500;
                 }
-
                 .feature-description {
-                    color: #ddd;
+                    color: #22AA22;
                     line-height: 1.6;
+                    font-size: 14px;
+                    font-family: "JetBrains Mono", monospace;
                 }
             </style>
         """, unsafe_allow_html=True)
@@ -1239,7 +974,6 @@ class ResumeApp:
             </div>
         """, unsafe_allow_html=True)
 
-        st.toast("Check out these repositories: [Iriswise](https://github.com/Hunterdii/Iriswise)", icon="ℹ️")
 
     def render_analyzer(self):
         """Render the resume analyzer page"""
@@ -1268,7 +1002,7 @@ class ResumeApp:
 
             # Display role information
             st.markdown(f"""
-            <div style='background-color: #1e1e1e; padding: 20px; border-radius: 10px; margin: 10px 0;'>
+            <div style='background-color: #111111; padding: 20px; border-radius: 0px; margin: 10px 0;'>
                 <h3>{selected_role}</h3>
                 <p>{role_info['description']}</p>
                 <h4>Required Skills:</h4>
@@ -1296,10 +1030,9 @@ class ResumeApp:
                     st.markdown("""
                     <style>
                     .upload-button {
-                        background: linear-gradient(90deg, #4b6cb7, #182848);
-                        color: white;
-                        border: none;
-                        border-radius: 10px;
+                        background: #111111; border: 1px solid #1E3A1E;
+                        color: #33FF33;
+                        border-radius: 0px;
                         padding: 15px 25px;
                         font-size: 18px;
                         font-weight: bold;
@@ -1307,19 +1040,16 @@ class ResumeApp:
                         width: 100%;
                         text-align: center;
                         margin: 20px 0;
-                        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
                         transition: all 0.3s ease;
                     }
                     .upload-button:hover {
-                        transform: translateY(-3px);
-                        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
                     }
 
                     """, unsafe_allow_html=True)
 
             if uploaded_file:
                 # Add a prominent analyze button
-                analyze_standard = st.button("🔍 Analyze My Resume",
+                analyze_standard = st.button("Analyze Resume",
                                     type="primary",
                                     use_container_width=True,
                                     key="analyze_standard_button")
@@ -1416,7 +1146,7 @@ class ResumeApp:
                         # Show results based on document type
                         if analysis.get('document_type') != 'resume':
                             st.error(
-    f"⚠️ This appears to be a {
+    f"[WARN] This appears to be a {
         analysis['document_type']} document, not a resume!")
                             st.warning(
                                 "Please upload a proper resume for ATS analysis.")
@@ -1436,8 +1166,8 @@ class ResumeApp:
                                     height: 150px;
                                     border-radius: 50%;
                                     background: conic-gradient(
-                                        #4CAF50 0% {score}%,
-                                        #2c2c2c {score}% 100%
+                                        #33FF33 0% {score}%,
+                                        #111111 {score}% 100%
                                     );
                                     display: flex;
                                     align-items: center;
@@ -1470,8 +1200,8 @@ class ResumeApp:
                             </div>
                         """.format(
                             score=analysis['ats_score'],
-                            color='#4CAF50' if analysis['ats_score'] >= 80 else '#FFA500' if analysis[
-                                'ats_score'] >= 60 else '#FF4444',
+                            color='#33FF33' if analysis['ats_score'] >= 80 else '#33FF33' if analysis[
+                                'ats_score'] >= 60 else '#33FF33',
                             status='Excellent' if analysis['ats_score'] >= 80 else 'Good' if analysis[
                                 'ats_score'] >= 60 else 'Needs Improvement'
                         ), unsafe_allow_html=True)
@@ -1513,14 +1243,14 @@ class ResumeApp:
                         # Suggestions Card with improved UI
                         st.markdown("""
                         <div class="feature-card">
-                            <h2>📋 Resume Improvement Suggestions</h2>
+                            <h2>> Resume Improvement Suggestions</h2>
                         """, unsafe_allow_html=True)
 
                             # Contact Section
                         if analysis.get('contact_suggestions'):
                                 st.markdown("""
-                                <div style='background-color: #1e1e1e; padding: 15px; border-radius: 10px; margin: 10px 0;'>
-                                    <h3 style='color: #4CAF50; margin-bottom: 10px;'>📞 Contact Information</h3>
+                                <div style='background-color: #111111; padding: 15px; border-radius: 0px; margin: 10px 0;'>
+                                    <h3 style='color: #33FF33; margin-bottom: 10px;'>Contact Information</h3>
                                     <ul style='list-style-type: none; padding-left: 0;'>
                                 """, unsafe_allow_html=True)
                                 for suggestion in analysis.get(
@@ -1534,8 +1264,8 @@ class ResumeApp:
                             # Summary Section
                         if analysis.get('summary_suggestions'):
                                 st.markdown("""
-                                <div style='background-color: #1e1e1e; padding: 15px; border-radius: 10px; margin: 10px 0;'>
-                                    <h3 style='color: #4CAF50; margin-bottom: 10px;'>📝 Professional Summary</h3>
+                                <div style='background-color: #111111; padding: 15px; border-radius: 0px; margin: 10px 0;'>
+                                    <h3 style='color: #33FF33; margin-bottom: 10px;'>Professional Summary</h3>
                                     <ul style='list-style-type: none; padding-left: 0;'>
                                 """, unsafe_allow_html=True)
                                 for suggestion in analysis.get(
@@ -1550,8 +1280,8 @@ class ResumeApp:
                         if analysis.get(
                             'skills_suggestions') or analysis['keyword_match']['missing_skills']:
                                 st.markdown("""
-                                <div style='background-color: #1e1e1e; padding: 15px; border-radius: 10px; margin: 10px 0;'>
-                                    <h3 style='color: #4CAF50; margin-bottom: 10px;'>🎯 Skills</h3>
+                                <div style='background-color: #111111; padding: 15px; border-radius: 0px; margin: 10px 0;'>
+                                    <h3 style='color: #33FF33; margin-bottom: 10px;'>Skills</h3>
                                     <ul style='list-style-type: none; padding-left: 0;'>
                                 """, unsafe_allow_html=True)
                                 for suggestion in analysis.get(
@@ -1573,8 +1303,8 @@ class ResumeApp:
                             # Experience Section
                         if analysis.get('experience_suggestions'):
                                 st.markdown("""
-                                <div style='background-color: #1e1e1e; padding: 15px; border-radius: 10px; margin: 10px 0;'>
-                                    <h3 style='color: #4CAF50; margin-bottom: 10px;'>💼 Work Experience</h3>
+                                <div style='background-color: #111111; padding: 15px; border-radius: 0px; margin: 10px 0;'>
+                                    <h3 style='color: #33FF33; margin-bottom: 10px;'>Work Experience</h3>
                                     <ul style='list-style-type: none; padding-left: 0;'>
                                 """, unsafe_allow_html=True)
                                 for suggestion in analysis.get(
@@ -1588,8 +1318,8 @@ class ResumeApp:
                             # Education Section
                         if analysis.get('education_suggestions'):
                                 st.markdown("""
-                                <div style='background-color: #1e1e1e; padding: 15px; border-radius: 10px; margin: 10px 0;'>
-                                    <h3 style='color: #4CAF50; margin-bottom: 10px;'>🎓 Education</h3>
+                                <div style='background-color: #111111; padding: 15px; border-radius: 0px; margin: 10px 0;'>
+                                    <h3 style='color: #33FF33; margin-bottom: 10px;'>Education</h3>
                                     <ul style='list-style-type: none; padding-left: 0;'>
                                 """, unsafe_allow_html=True)
                                 for suggestion in analysis.get(
@@ -1603,8 +1333,8 @@ class ResumeApp:
                             # General Formatting Suggestions
                         if analysis.get('format_suggestions'):
                                 st.markdown("""
-                                <div style='background-color: #1e1e1e; padding: 15px; border-radius: 10px; margin: 10px 0;'>
-                                    <h3 style='color: #4CAF50; margin-bottom: 10px;'>📄 Formatting</h3>
+                                <div style='background-color: #111111; padding: 15px; border-radius: 0px; margin: 10px 0;'>
+                                    <h3 style='color: #33FF33; margin-bottom: 10px;'>Formatting</h3>
                                     <ul style='list-style-type: none; padding-left: 0;'>
                                 """, unsafe_allow_html=True)
                                 for suggestion in analysis.get(
@@ -1620,7 +1350,7 @@ class ResumeApp:
                         # Course Recommendations
                     st.markdown("""
                         <div class="feature-card">
-                            <h2>📚 Recommended Courses</h2>
+                            <h2>> Recommended Courses</h2>
                         """, unsafe_allow_html=True)
 
                         # Get courses based on role and category
@@ -1636,7 +1366,7 @@ class ResumeApp:
                         courses[:6]):  # Show top 6 courses
                             with cols[i % 2]:
                                 st.markdown(f"""
-                                <div style='background-color: #1e1e1e; padding: 15px; border-radius: 10px; margin: 10px 0;'>
+                                <div style='background-color: #111111; padding: 15px; border-radius: 0px; margin: 10px 0;'>
                                     <h4>{course[0]}</h4>
                                     <a href='{course[1]}' target='_blank'>View Course</a>
                                 </div>
@@ -1647,7 +1377,7 @@ class ResumeApp:
                         # Learning Resources
                     st.markdown("""
                         <div class="feature-card">
-                            <h2>📺 Helpful Videos</h2>
+                            <h2>> Helpful Videos</h2>
                         """, unsafe_allow_html=True)
 
                     tab1, tab2 = st.tabs(["Resume Tips", "Interview Tips"])
@@ -1674,7 +1404,7 @@ class ResumeApp:
 
         with analyzer_tabs[1]:
             st.markdown("""
-            <div style='background-color: #1e1e1e; padding: 20px; border-radius: 10px; margin: 10px 0;'>
+            <div style='background-color: #111111; padding: 20px; border-radius: 0px; margin: 10px 0;'>
                 <h3>AI-Powered Resume Analysis</h3>
                 <p>Get detailed insights from advanced AI models that analyze your resume and provide personalized recommendations.</p>
                 <p><strong>Upload your resume to get AI-powered analysis and recommendations.</strong></p>
@@ -1702,18 +1432,18 @@ class ResumeApp:
                 )
                 
                 st.markdown("""
-                <div style='background-color: #2e7d32; padding: 15px; border-radius: 10px; margin: 10px 0;'>
+                <div style='background-color: #0D1F0D; padding: 15px; border-radius: 0px; margin: 10px 0;'>
                     <p><i class="fas fa-lightbulb"></i> <strong>Pro Tip:</strong> Including the actual job description significantly improves the accuracy of the analysis and provides more relevant recommendations tailored to the specific position.</p>
                 </div>
                 """, unsafe_allow_html=True)
              
                         # Add AI Analyzer Stats in an expander
-            with st.expander("📊 AI Analyzer Statistics", expanded=False):
+            with st.expander("AI ANALYZER STATISTICS", expanded=False):
                 try:
                     # Add a reset button for admin users
                     if st.session_state.get('is_admin', False):
                         if st.button(
-    "🔄 Reset AI Analysis Statistics",
+    "> Reset AI Analysis Statistics",
     type="secondary",
      key="reset_ai_stats_button_2"):
                             from config.database import reset_ai_analysis_stats
@@ -1734,31 +1464,31 @@ class ResumeApp:
                         st.markdown("""
                         <style>
                         .stats-card {
-                            background: linear-gradient(135deg, #1e3c72, #2a5298);
-                            border-radius: 10px;
+                            background: #111111; border: 1px solid #1E3A1E;
+                            border-radius: 0px;
                             padding: 15px;
                             margin-bottom: 15px;
-                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
                             text-align: center;
                         }
                         .stats-value {
                             font-size: 28px;
                             font-weight: bold;
-                            color: white;
+                            color: #33FF33;
                             margin: 10px 0;
                         }
                         .stats-label {
                             font-size: 14px;
-                            color: rgba(255, 255, 255, 0.8);
+                            color: rgba(51, 255, 51, 0.5);
                             text-transform: uppercase;
                             letter-spacing: 1px;
                         }
                         .score-card {
-                            background: linear-gradient(135deg, #11998e, #38ef7d);
-                            border-radius: 10px;
+                            background: #111111; border: 1px solid #1E3A1E;
+                            border-radius: 0px;
                             padding: 15px;
                             margin-bottom: 15px;
-                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
                             text-align: center;
                         }
                         </style>
@@ -1776,10 +1506,10 @@ class ResumeApp:
 
                         with col2:
                             # Determine color based on score
-                            score_color = "#38ef7d" if ai_stats["average_score"] >= 80 else "#FFEB3B" if ai_stats[
-                                "average_score"] >= 60 else "#FF5252"
+                            score_color = "#33FF33" if ai_stats["average_score"] >= 80 else "#33FF33" if ai_stats[
+                                "average_score"] >= 60 else "#33FF33"
                             st.markdown(f"""
-                            <div class="stats-card" style="background: linear-gradient(135deg, #2c3e50, {score_color});">
+                            <div class="stats-card" style="background: #111111; border: 1px solid #1E3A1E;">
                                 <div class="stats-label">Average Resume Score</div>
                                 <div class="stats-value">{ai_stats["average_score"]}/100</div>
                             </div>
@@ -1794,20 +1524,20 @@ class ResumeApp:
                                 domain={'x': [0, 1], 'y': [0, 1]},
                                 title={
     'text': "Score", 'font': {
-        'size': 14, 'color': 'white'}},
+        'size': 14, 'color': '#33FF33'}},
                                 gauge={
-                                    'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "white"},
-                                    'bar': {'color': "#38ef7d" if ai_stats["average_score"] >= 80 else "#FFEB3B" if ai_stats["average_score"] >= 60 else "#FF5252"},
+                                    'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#1E3A1E"},
+                                    'bar': {'color': "#33FF33" if ai_stats["average_score"] >= 80 else "#33FF33" if ai_stats["average_score"] >= 60 else "#33FF33"},
                                     'bgcolor': "rgba(0,0,0,0)",
                                     'borderwidth': 2,
-                                    'bordercolor': "white",
+                                    'bordercolor': "#1E3A1E",
                                     'steps': [
                                         {'range': [
-                                            0, 40], 'color': 'rgba(255, 82, 82, 0.3)'},
+                                            0, 40], 'color': 'rgba(51, 255, 51, 0.05)'},
                                         {'range': [
-                                            40, 70], 'color': 'rgba(255, 235, 59, 0.3)'},
+                                            40, 70], 'color': 'rgba(51, 255, 51, 0.1)'},
                                         {'range': [
-                                            70, 100], 'color': 'rgba(56, 239, 125, 0.3)'}
+                                            70, 100], 'color': 'rgba(51, 255, 51, 0.15)'}
                                     ],
                                 }
                             ))
@@ -1815,7 +1545,7 @@ class ResumeApp:
                             fig.update_layout(
                                 paper_bgcolor='rgba(0,0,0,0)',
                                 plot_bgcolor='rgba(0,0,0,0)',
-                                font={'color': "white"},
+                                font={'color': "#33FF33"},
                                 height=150,
                                 margin=dict(l=10, r=10, t=30, b=10)
                             )
@@ -1824,7 +1554,7 @@ class ResumeApp:
 
                         # Display model usage with enhanced visualization
                         if ai_stats["model_usage"]:
-                            st.markdown("### 🤖 Model Usage")
+                            st.markdown("### MODEL USAGE")
                             model_data = pd.DataFrame(ai_stats["model_usage"])
 
                             # Create a more colorful pie chart
@@ -1851,7 +1581,7 @@ class ResumeApp:
                                 height=300,
                                 paper_bgcolor='rgba(0,0,0,0)',
                                 plot_bgcolor='rgba(0,0,0,0)',
-                                font=dict(color="#ffffff", size=14),
+                                font=dict(color="#33FF33", size=14),
                                 legend=dict(
                                     orientation="h",
                                     yanchor="bottom",
@@ -1865,7 +1595,7 @@ class ResumeApp:
                                     'x': 0.5,
                                     'xanchor': 'center',
                                     'yanchor': 'top',
-                                    'font': {'size': 18, 'color': 'white'}
+                                    'font': {'size': 18, 'color': '#33FF33'}
                                 }
                             )
 
@@ -1873,7 +1603,7 @@ class ResumeApp:
 
                         # Display top job roles with enhanced visualization
                         if ai_stats["top_job_roles"]:
-                            st.markdown("### 🎯 Top Job Roles")
+                            st.markdown("### TOP JOB ROLES")
                             roles_data = pd.DataFrame(
                                 ai_stats["top_job_roles"])
 
@@ -1890,7 +1620,7 @@ class ResumeApp:
 
                             fig.update_traces(
                                 marker_line_width=1.5,
-                                marker_line_color="white",
+                                marker_line_color="#1E3A1E",
                                 opacity=0.9
                             )
 
@@ -1899,14 +1629,14 @@ class ResumeApp:
                                 height=350,
                                 paper_bgcolor='rgba(0,0,0,0)',
                                 plot_bgcolor='rgba(0,0,0,0)',
-                                font=dict(color="#ffffff", size=14),
+                                font=dict(color="#33FF33", size=14),
                                 title={
                                     'text': 'Most Analyzed Job Roles',
                                     'y': 0.95,
                                     'x': 0.5,
                                     'xanchor': 'center',
                                     'yanchor': 'top',
-                                    'font': {'size': 18, 'color': 'white'}
+                                    'font': {'size': 18, 'color': '#33FF33'}
                                 },
                                 xaxis=dict(
                                     title="",
@@ -1915,7 +1645,7 @@ class ResumeApp:
                                 ),
                                 yaxis=dict(
                                     title="Number of Analyses",
-                                    gridcolor="rgba(255, 255, 255, 0.1)"
+                                    gridcolor="rgba(51, 255, 51, 0.05)"
                                 ),
                                 coloraxis_showscale=False
                             )
@@ -1924,7 +1654,7 @@ class ResumeApp:
 
                             # Add a timeline chart for analysis over time (mock
                             # data for now)
-                            st.markdown("### 📈 Analysis Trend")
+                            st.markdown("### ANALYSIS TREND")
                             st.info(
                                 "This is a conceptual visualization. To implement actual time-based analysis, additional data collection would be needed.")
 
@@ -1965,14 +1695,14 @@ class ResumeApp:
                                 y='Analyses',
                                 markers=True,
                                 line_shape='spline',
-                                color_discrete_sequence=["#38ef7d"]
+                                color_discrete_sequence=["#33FF33"]
                             )
 
                             fig.update_traces(
                                 line=dict(width=3),
                                 marker=dict(
     size=8, line=dict(
-        width=2, color='white'))
+        width=2, color='#33FF33'))
                             )
 
                             fig.update_layout(
@@ -1980,22 +1710,22 @@ class ResumeApp:
                                 height=300,
                                 paper_bgcolor='rgba(0,0,0,0)',
                                 plot_bgcolor='rgba(0,0,0,0)',
-                                font=dict(color="#ffffff", size=14),
+                                font=dict(color="#33FF33", size=14),
                                 title={
                                     'text': 'Analysis Activity (Last 7 Days)',
                                     'y': 0.95,
                                     'x': 0.5,
                                     'xanchor': 'center',
                                     'yanchor': 'top',
-                                    'font': {'size': 18, 'color': 'white'}
+                                    'font': {'size': 18, 'color': '#33FF33'}
                                 },
                                 xaxis=dict(
                                     title="",
-                                    gridcolor="rgba(255, 255, 255, 0.1)"
+                                    gridcolor="rgba(51, 255, 51, 0.05)"
                                 ),
                                 yaxis=dict(
                                     title="Number of Analyses",
-                                    gridcolor="rgba(255, 255, 255, 0.1)"
+                                    gridcolor="rgba(51, 255, 51, 0.05)"
                                 )
                             )
 
@@ -2004,8 +1734,8 @@ class ResumeApp:
                         # Display score distribution if available
                         if ai_stats["score_distribution"]:
                             st.markdown("""
-                            <h3 style='text-align: center; margin-bottom: 20px; background: linear-gradient(90deg, #4b6cb7, #182848); padding: 15px; border-radius: 10px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);'>
-                                📊 Score Distribution Analysis
+                            <h3 style='text-align: center; margin-bottom: 16px; background: #111111; padding: 12px; border: 1px solid #1E3A1E; color: #33FF33; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px;'>
+                                // SCORE DISTRIBUTION
                             </h3>
                             """, unsafe_allow_html=True)
 
@@ -2020,11 +1750,11 @@ class ResumeApp:
                                 y="count",
                                 color="range",
                                 color_discrete_map={
-                                    "0-20": "#FF5252",
-                                    "21-40": "#FF7043",
-                                    "41-60": "#FFEB3B",
-                                    "61-80": "#8BC34A",
-                                    "81-100": "#38ef7d"
+                                    "0-20": "#33FF33",
+                                    "21-40": "#33FF33",
+                                    "41-60": "#33FF33",
+                                    "61-80": "#33FF33",
+                                    "81-100": "#33FF33"
                                 },
                                 labels={
     "range": "Score Range",
@@ -2034,11 +1764,11 @@ class ResumeApp:
 
                             fig.update_traces(
                                 marker_line_width=2,
-                                marker_line_color="white",
+                                marker_line_color="#1E3A1E",
                                 opacity=0.9,
                                 textposition='outside',
                                 textfont=dict(
-    color="white", size=14, family="Arial, sans-serif"),
+    color="#33FF33", size=14, family="JetBrains Mono, monospace"),
                                 hovertemplate="<b>Score Range:</b> %{x}<br><b>Number of Resumes:</b> %{y}<extra></extra>"
                             )
 
@@ -2049,31 +1779,31 @@ class ResumeApp:
                                 paper_bgcolor='rgba(0,0,0,0)',
                                 plot_bgcolor='rgba(0,0,0,0)',
                                 font=dict(
-    color="#ffffff", size=14, family="Arial, sans-serif"),
+    color="#33FF33", size=14, family="JetBrains Mono, monospace"),
                                 # title={
                                 #     # 'text': 'Resume Score Distribution',
                                 #     'y': 0.95,
                                 #     'x': 0.5,
                                 #     'xanchor': 'center',
                                 #     'yanchor': 'top',
-                                #     'font': {'size': 22, 'color': 'white', 'family': 'Arial, sans-serif', 'weight': 'bold'}
+                                #     'font': {'size': 22, 'color': '#33FF33', 'family': 'JetBrains Mono, monospace', 'weight': 'bold'}
                                 # },
                                 xaxis=dict(
                                     title=dict(
     text="Score Range", font=dict(
-        size=16, color="white")),
+        size=16, color="#33FF33")),
                                     categoryorder="array",
                                     categoryarray=[
     "0-20", "21-40", "41-60", "61-80", "81-100"],
-                                    tickfont=dict(size=14, color="white"),
-                                    gridcolor="rgba(255, 255, 255, 0.1)"
+                                    tickfont=dict(size=14, color="#33FF33"),
+                                    gridcolor="rgba(51, 255, 51, 0.05)"
                                 ),
                                 yaxis=dict(
                                     title=dict(
     text="Number of Resumes", font=dict(
-        size=16, color="white")),
-                                    tickfont=dict(size=14, color="white"),
-                                    gridcolor="rgba(255, 255, 255, 0.1)",
+        size=16, color="#33FF33")),
+                                    tickfont=dict(size=14, color="#33FF33"),
+                                    gridcolor="rgba(51, 255, 51, 0.05)",
                                     zeroline=False
                                 ),
                                 showlegend=False,
@@ -2088,7 +1818,7 @@ class ResumeApp:
                                         y0=0,
                                         x1=1,
                                         y1=1,
-                                        fillcolor="rgba(26, 26, 44, 0.5)",
+                                        fillcolor="rgba(13, 31, 13, 0.5)",
                                         layer="below",
                                         line_width=0,
                                     )
@@ -2108,9 +1838,9 @@ class ResumeApp:
                                     yref="paper",
                                     text=f"Most resumes fall in the {max_range} score range",
                                     showarrow=False,
-                                    font=dict(size=14, color="#FFEB3B"),
+                                    font=dict(size=14, color="#33FF33"),
                                     bgcolor="rgba(0,0,0,0.5)",
-                                    bordercolor="#FFEB3B",
+                                    bordercolor="#33FF33",
                                     borderwidth=1,
                                     borderpad=4,
                                     opacity=0.8
@@ -2118,14 +1848,14 @@ class ResumeApp:
 
                             # Display the chart in a styled container
                             st.markdown("""
-                            <div style='background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; border-radius: 15px; margin: 10px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.2);'>
+                            <div style='background: #111111; border: 1px solid #1E3A1E; padding: 20px; border-radius: 0px; margin: 10px 0;'>
                             """, unsafe_allow_html=True)
 
                             st.plotly_chart(fig, use_container_width=True)
 
                             # Add descriptive text below the chart
                             st.markdown("""
-                            <p style='color: white; text-align: center; font-style: italic; margin-top: 10px;'>
+                            <p style='color: #33FF33; text-align: center; font-style: italic; margin-top: 10px;'>
                                 This chart shows the distribution of resume scores across different ranges, helping identify common performance levels.
                             </p>
                             </div>
@@ -2134,8 +1864,8 @@ class ResumeApp:
                         # Display recent analyses if available
                         if ai_stats["recent_analyses"]:
                             st.markdown("""
-                            <h3 style='text-align: center; margin-bottom: 20px; background: linear-gradient(90deg, #4b6cb7, #182848); padding: 15px; border-radius: 10px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);'>
-                                🕒 Recent Resume Analyses
+                            <h3 style='text-align: center; margin-bottom: 16px; background: #111111; padding: 12px; border: 1px solid #1E3A1E; color: #33FF33; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px;'>
+                                > Recent Resume Analyses
                             </h3>
                             """, unsafe_allow_html=True)
 
@@ -2148,93 +1878,89 @@ class ResumeApp:
                                 border-collapse: separate;
                                 border-spacing: 0 8px;
                                 margin-bottom: 20px;
-                                font-family: 'Arial', sans-serif;
+                                font-family: 'JetBrains Mono', monospace;
                             }
                             .modern-analyses-table th {
-                                background: linear-gradient(135deg, #1e3c72, #2a5298);
-                                color: white;
+                                background: #111111; border: 1px solid #1E3A1E;
+                                color: #33FF33;
                                 padding: 15px;
                                 text-align: left;
                                 font-weight: bold;
                                 font-size: 14px;
                                 text-transform: uppercase;
                                 letter-spacing: 1px;
-                                border-radius: 8px;
+                                border-radius: 0px;
                             }
                             .modern-analyses-table td {
                                 padding: 15px;
-                                background-color: rgba(30, 30, 30, 0.7);
-                                border-top: 1px solid rgba(255, 255, 255, 0.05);
+                                background-color: rgba(17, 17, 17, 0.7);
+                                border-top: 1px solid rgba(51, 255, 51, 0.03);
                                 border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-                                color: white;
+                                color: #33FF33;
                             }
                             .modern-analyses-table tr td:first-child {
-                                border-top-left-radius: 8px;
-                                border-bottom-left-radius: 8px;
+                                border-top-left-radius: 0px;
+                                border-bottom-left-radius: 0px;
                             }
                             .modern-analyses-table tr td:last-child {
-                                border-top-right-radius: 8px;
-                                border-bottom-right-radius: 8px;
+                                border-top-right-radius: 0px;
+                                border-bottom-right-radius: 0px;
                             }
                             .modern-analyses-table tr:hover td {
-                                background-color: rgba(60, 60, 60, 0.7);
-                                transform: translateY(-2px);
+                                background-color: rgba(30, 58, 30, 0.7);
                                 transition: all 0.2s ease;
-                                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
                             }
                             .model-badge {
                                 display: inline-block;
                                 padding: 6px 12px;
-                                border-radius: 20px;
+                                border-radius: 0px;
                                 font-weight: bold;
                                 text-align: center;
                                 font-size: 12px;
                                 letter-spacing: 0.5px;
-                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
                             }
                             .model-gemini {
-                                background: linear-gradient(135deg, #4e54c8, #8f94fb);
-                                color: white;
+                                background: #111111; border: 1px solid #1E3A1E;
+                                color: #33FF33;
                             }
                             .model-claude {
-                                background: linear-gradient(135deg, #834d9b, #d04ed6);
-                                color: white;
+                                background: #111111; border: 1px solid #1E3A1E;
+                                color: #33FF33;
                             }
                             .score-pill {
                                 display: inline-block;
                                 padding: 8px 15px;
-                                border-radius: 20px;
+                                border-radius: 0px;
                                 font-weight: bold;
                                 text-align: center;
                                 min-width: 70px;
-                                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
                             }
                             .score-high {
-                                background: linear-gradient(135deg, #11998e, #38ef7d);
-                                color: white;
+                                background: #111111; border: 1px solid #1E3A1E;
+                                color: #33FF33;
                             }
                             .score-medium {
-                                background: linear-gradient(135deg, #f2994a, #f2c94c);
-                                color: white;
+                                background: #111111; border: 1px solid #1E3A1E;
+                                color: #33FF33;
                             }
                             .score-low {
-                                background: linear-gradient(135deg, #cb2d3e, #ef473a);
-                                color: white;
+                                background: #111111; border: 1px solid #1E3A1E;
+                                color: #33FF33;
                             }
                             .date-badge {
                                 display: inline-block;
                                 padding: 6px 12px;
-                                border-radius: 20px;
-                                background-color: rgba(255, 255, 255, 0.1);
-                                color: #e0e0e0;
+                                border-radius: 0px;
+                                background-color: rgba(51, 255, 51, 0.05);
+                                color: #33FF33;
                                 font-size: 12px;
                             }
                             .role-badge {
                                 display: inline-block;
                                 padding: 6px 12px;
-                                border-radius: 8px;
-                                background-color: rgba(33, 150, 243, 0.2);
-                                color: #90caf9;
+                                border-radius: 0px;
+                                background-color: rgba(51, 255, 51, 0.1);
+                                color: #33FF33;
                                 font-size: 13px;
                                 max-width: 200px;
                                 white-space: nowrap;
@@ -2243,7 +1969,7 @@ class ResumeApp:
                             }
                             </style>
 
-                            <div style='background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; border-radius: 15px; margin: 10px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.2);'>
+                            <div style='background: #111111; border: 1px solid #1E3A1E; padding: 20px; border-radius: 0px; margin: 10px 0;'>
                             <table class="modern-analyses-table">
                                 <tr>
                                     <th>AI Model</th>
@@ -2283,7 +2009,7 @@ class ResumeApp:
                             st.markdown("""
                             </table>
 
-                            <p style='color: white; text-align: center; font-style: italic; margin-top: 15px;'>
+                            <p style='color: #33FF33; text-align: center; font-style: italic; margin-top: 15px;'>
                                 These are the most recent resume analyses performed by our AI models.
                             </p>
                             </div>
@@ -2306,7 +2032,7 @@ class ResumeApp:
 
             # Display role information
             st.markdown(f"""
-            <div style='background-color: #1e1e1e; padding: 20px; border-radius: 10px; margin: 10px 0;'>
+            <div style='background-color: #111111; padding: 20px; border-radius: 0px; margin: 10px 0;'>
                 <h3>{selected_role}</h3>
                 <p>{role_info['description']}</p>
                 <h4>Required Skills:</h4>
@@ -2330,7 +2056,7 @@ class ResumeApp:
     )
             else:
                 # Add a prominent analyze button
-                analyze_ai = st.button("🤖 Analyze with AI",
+                analyze_ai = st.button("Analyze with AI",
                                 type="primary",
                                 use_container_width=True,
                                 key="analyze_ai_button")
@@ -2355,7 +2081,7 @@ class ResumeApp:
                         # Analyze with AI
                         try:
                             # Show a loading animation
-                            with st.spinner("🧠 AI is analyzing your resume..."):
+                            with st.spinner("> AI is analyzing your resume..."):
                                 progress_bar = st.progress(0)
                                 
                                 # Get the selected model
@@ -2425,7 +2151,7 @@ class ResumeApp:
                                 
                                 # Display the analysis result
                                 if analysis_result and "error" not in analysis_result:
-                                    st.success("✅ Analysis complete!")
+                                    st.success("[OK] Analysis complete!")
                                     
                                     # Extract data from the analysis
                                     full_response = analysis_result.get(
@@ -2449,16 +2175,16 @@ class ResumeApp:
                                     
                                     # Create a modern styled header for the report
                                     st.markdown(f"""
-                                    <div style="background-color: #262730; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                                        <h2 style="color: #ffffff; margin-bottom: 10px;">AI Resume Analysis Report</h2>
+                                    <div style="background-color: #111111; padding: 20px; border-radius: 0px; margin-bottom: 20px;">
+                                        <h2 style="color: #33FF33; margin-bottom: 10px;">AI Resume Analysis Report</h2>
                                         <div style="display: flex; flex-wrap: wrap; gap: 20px;">
                                             <div style="flex: 1; min-width: 200px;">
-                                                <p style="color: #ffffff;"><strong>Job Role:</strong> {job_role if job_role else "Not specified"}</p>
-                                                <p style="color: #ffffff;"><strong>Analysis Date:</strong> {current_date}</p>                                                                                                                                        </div>
+                                                <p style="color: #33FF33;"><strong>Job Role:</strong> {job_role if job_role else "Not specified"}</p>
+                                                <p style="color: #33FF33;"><strong>Analysis Date:</strong> {current_date}</p>                                                                                                                                        </div>
                                             <div style="flex: 1; min-width: 200px;">
-                                                <p style="color: #ffffff;"><strong>AI Model:</strong> {model_used}</p>
-                                                <p style="color: #ffffff;"><strong>Overall Score:</strong> {resume_score}/100 - {"Excellent" if resume_score >= 80 else "Good" if resume_score >= 60 else "Needs Improvement"}</p>
-                                                {f'<p style="color: #4CAF50;"><strong>✓ Custom Job Description Used</strong></p>' if st.session_state.get('used_custom_job_desc', False) else ''}
+                                                <p style="color: #33FF33;"><strong>AI Model:</strong> {model_used}</p>
+                                                <p style="color: #33FF33;"><strong>Overall Score:</strong> {resume_score}/100 - {"Excellent" if resume_score >= 80 else "Good" if resume_score >= 60 else "Needs Improvement"}</p>
+                                                {f'<p style="color: #33FF33;"><strong>✓ Custom Job Description Used</strong></p>' if st.session_state.get('used_custom_job_desc', False) else ''}
                                     </div>
                                     """, unsafe_allow_html=True)
                                     
@@ -2476,18 +2202,18 @@ class ResumeApp:
                                             title={'text': "Resume Score", 'font': {'size': 16}},
                                             gauge={
                                                 'axis': {'range': [0, 100], 'tickwidth': 1},
-                                                'bar': {'color': "#4CAF50" if resume_score >= 80 else "#FFA500" if resume_score >= 60 else "#FF4444"},
-                                                'bgcolor': "white",
+                                                'bar': {'color': "#33FF33" if resume_score >= 80 else "#22AA22" if resume_score >= 60 else "#116611"},
+                                                'bgcolor': "#111111",
                                                 'borderwidth': 2,
-                                                'bordercolor': "gray",
+                                                'bordercolor': "#1E3A1E",
                                                 'steps': [
-                                                    {'range': [0, 40], 'color': 'rgba(255, 68, 68, 0.2)'},
-                                                    {'range': [40, 60], 'color': 'rgba(255, 165, 0, 0.2)'},
-                                                    {'range': [60, 80], 'color': 'rgba(255, 214, 0, 0.2)'},
-                                                    {'range': [80, 100], 'color': 'rgba(76, 175, 80, 0.2)'}
+                                                    {'range': [0, 40], 'color': 'rgba(51, 255, 51, 0.05)'},
+                                                    {'range': [40, 60], 'color': 'rgba(51, 255, 51, 0.08)'},
+                                                    {'range': [60, 80], 'color': 'rgba(51, 255, 51, 0.1)'},
+                                                    {'range': [80, 100], 'color': 'rgba(51, 255, 51, 0.1)'}
                                                 ],
                                                 'threshold': {
-                                                    'line': {'color': "red", 'width': 4},
+                                                    'line': {'color': "#116611", 'width': 4},
                                                     'thickness': 0.75,
                                                     'value': 60
                                                 }
@@ -2513,18 +2239,18 @@ class ResumeApp:
                                             title={'text': "ATS Optimization Score", 'font': {'size': 16}},
                                             gauge={
                                                 'axis': {'range': [0, 100], 'tickwidth': 1},
-                                                'bar': {'color': "#4CAF50" if ats_score >= 80 else "#FFA500" if ats_score >= 60 else "#FF4444"},
-                                                'bgcolor': "white",
+                                                'bar': {'color': "#33FF33" if ats_score >= 80 else "#22AA22" if ats_score >= 60 else "#116611"},
+                                                'bgcolor': "#111111",
                                                 'borderwidth': 2,
-                                                'bordercolor': "gray",
+                                                'bordercolor': "#1E3A1E",
                                                 'steps': [
-                                                    {'range': [0, 40], 'color': 'rgba(255, 68, 68, 0.2)'},
-                                                    {'range': [40, 60], 'color': 'rgba(255, 165, 0, 0.2)'},
-                                                    {'range': [60, 80], 'color': 'rgba(255, 214, 0, 0.2)'},
-                                                    {'range': [80, 100], 'color': 'rgba(76, 175, 80, 0.2)'}
+                                                    {'range': [0, 40], 'color': 'rgba(51, 255, 51, 0.05)'},
+                                                    {'range': [40, 60], 'color': 'rgba(51, 255, 51, 0.08)'},
+                                                    {'range': [60, 80], 'color': 'rgba(51, 255, 51, 0.1)'},
+                                                    {'range': [80, 100], 'color': 'rgba(51, 255, 51, 0.1)'}
                                                 ],
                                                 'threshold': {
-                                                    'line': {'color': "red", 'width': 4},
+                                                    'line': {'color': "#116611", 'width': 4},
                                                     'thickness': 0.75,
                                                     'value': 60
                                                 }
@@ -2551,7 +2277,7 @@ class ResumeApp:
                                         # If we have a job match score, display it
                                         if job_match_score:
                                             st.markdown("""
-                                            <h3 style="background: linear-gradient(90deg, #4d7c0f, #84cc16); color: white; padding: 10px; border-radius: 5px; margin-top: 20px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; margin-top: 16px; font-family: JetBrains Mono, monospace; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">
                                                 <i class="fas fa-handshake"></i> Job Description Match Analysis
                                             </h3>
                                             """, unsafe_allow_html=True)
@@ -2567,18 +2293,18 @@ class ResumeApp:
                                                     title={'text': "Job Match Score", 'font': {'size': 16}},
                                                     gauge={
                                                         'axis': {'range': [0, 100], 'tickwidth': 1},
-                                                        'bar': {'color': "#4CAF50" if job_match_score >= 80 else "#FFA500" if job_match_score >= 60 else "#FF4444"},
-                                                        'bgcolor': "white",
+                                                        'bar': {'color': "#33FF33" if job_match_score >= 80 else "#22AA22" if job_match_score >= 60 else "#116611"},
+                                                        'bgcolor': "#111111",
                                                         'borderwidth': 2,
-                                                        'bordercolor': "gray",
+                                                        'bordercolor': "#1E3A1E",
                                                         'steps': [
-                                                            {'range': [0, 40], 'color': 'rgba(255, 68, 68, 0.2)'},
-                                                            {'range': [40, 60], 'color': 'rgba(255, 165, 0, 0.2)'},
-                                                            {'range': [60, 80], 'color': 'rgba(255, 214, 0, 0.2)'},
-                                                            {'range': [80, 100], 'color': 'rgba(76, 175, 80, 0.2)'}
+                                                            {'range': [0, 40], 'color': 'rgba(51, 255, 51, 0.05)'},
+                                                            {'range': [40, 60], 'color': 'rgba(51, 255, 51, 0.08)'},
+                                                            {'range': [60, 80], 'color': 'rgba(51, 255, 51, 0.1)'},
+                                                            {'range': [80, 100], 'color': 'rgba(51, 255, 51, 0.1)'}
                                                         ],
                                                         'threshold': {
-                                                            'line': {'color': "red", 'width': 4},
+                                                            'line': {'color': "#116611", 'width': 4},
                                                             'thickness': 0.75,
                                                             'value': 60
                                                         }
@@ -2597,10 +2323,10 @@ class ResumeApp:
                                             
                                             with col2:
                                                 st.markdown("""
-                                                <div style="background-color: #262730; padding: 20px; border-radius: 10px; height: 100%;">
-                                                    <h4 style="color: #ffffff; margin-bottom: 15px;">What This Means</h4>
-                                                    <p style="color: #ffffff;">This score represents how well your resume matches the specific job description you provided.</p>
-                                                    <ul style="color: #ffffff; padding-left: 20px;">
+                                                <div style="background-color: #111111; padding: 20px; border-radius: 0px; height: 100%;">
+                                                    <h4 style="color: #33FF33; margin-bottom: 15px;">What This Means</h4>
+                                                    <p style="color: #33FF33;">This score represents how well your resume matches the specific job description you provided.</p>
+                                                    <ul style="color: #33FF33; padding-left: 20px;">
                                                         <li><strong>80-100:</strong> Excellent match - your resume is highly aligned with this job</li>
                                                         <li><strong>60-79:</strong> Good match - your resume matches many requirements</li>
                                                         <li><strong>Below 60:</strong> Consider tailoring your resume more specifically to this job</li>
@@ -2615,73 +2341,73 @@ class ResumeApp:
                                     # Replace section headers with styled headers
                                     section_styles = {
                                         "## Overall Assessment": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #1e3a8a, #3b82f6); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-chart-line"></i> Overall Assessment
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## Professional Profile Analysis": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #047857, #10b981); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-user-tie"></i> Professional Profile Analysis
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## Skills Analysis": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #4f46e5, #818cf8); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-tools"></i> Skills Analysis
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## Experience Analysis": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #9f1239, #e11d48); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-briefcase"></i> Experience Analysis
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## Education Analysis": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #854d0e, #eab308); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-graduation-cap"></i> Education Analysis
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## Key Strengths": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #166534, #22c55e); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-check-circle"></i> Key Strengths
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## Areas for Improvement": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #9f1239, #fb7185); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-exclamation-circle"></i> Areas for Improvement
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## ATS Optimization Assessment": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #0e7490, #06b6d4); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-robot"></i> ATS Optimization Assessment
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## Recommended Courses": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #5b21b6, #8b5cf6); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-book"></i> Recommended Courses
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## Resume Score": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #0369a1, #0ea5e9); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-star"></i> Resume Score
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## Role Alignment Analysis": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #7c2d12, #ea580c); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-bullseye"></i> Role Alignment Analysis
                                             </h3>
                                             <div class="section-content">""",
                                             
                                         "## Job Match Analysis": """<div class="report-section">
-                                            <h3 style="background: linear-gradient(90deg, #4d7c0f, #84cc16); color: white; padding: 10px; border-radius: 5px;">
+                                            <h3 style="background: #111111; color: #33FF33; padding: 8px 12px; border: 1px solid #1E3A1E; font-family: JetBrains Mono, monospace; text-transform: uppercase; letter-spacing: 1px; font-size: 13px;">
                                                 <i class="fas fa-handshake"></i> Job Match Analysis
                                             </h3>
                                             <div class="section-content">""",
@@ -2728,14 +2454,14 @@ class ResumeApp:
                                     <style>
                                         .report-section {
                                             margin-bottom: 25px;
-                                            border: 1px solid #4B4B4B;
-                                            border-radius: 8px;
+                                            border: 1px solid #1E3A1E;
+                                            border-radius: 0px;
                                             overflow: hidden;
                                         }
                                         .section-content {
                                             padding: 15px;
-                                            background-color: #262730;
-                                            color: #ffffff;
+                                            background-color: #111111;
+                                            color: #33FF33;
                                         }
                                         .report-section h3 {
                                             margin-top: 0;
@@ -2745,11 +2471,11 @@ class ResumeApp:
                                             padding-left: 20px;
                                         }
                                         .report-section p {
-                                            color: #ffffff;
+                                            color: #33FF33;
                                             margin-bottom: 10px;
                                         }
                                         .report-section li {
-                                            color: #ffffff;
+                                            color: #33FF33;
                                             margin-bottom: 5px;
                                         }
                                     </style>
@@ -2757,7 +2483,7 @@ class ResumeApp:
 
                                     # Display the formatted analysis
                                     st.markdown(f"""
-                                    <div style="background-color: #262730; padding: 20px; border-radius: 10px; border: 1px solid #4B4B4B; color: #ffffff;">
+                                    <div style="background-color: #111111; padding: 20px; border-radius: 0px; border: 1px solid #1E3A1E; color: #33FF33;">
                                         {formatted_analysis}
                                     </div>
                                     """, unsafe_allow_html=True)
@@ -2782,7 +2508,7 @@ class ResumeApp:
                                     # PDF download button
                                     if pdf_buffer:
                                         st.download_button(
-                                            label="📊 Download PDF Report",
+                                            label="Download PDF Report",
                                             data=pdf_buffer,
                                             file_name=f"resume_analysis_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf",
                                             mime="application/pdf",
@@ -2798,7 +2524,6 @@ class ResumeApp:
                             import traceback as tb
                             st.code(tb.format_exc())
 
-        st.toast("Check out these repositories: [Awesome Java](https://github.com/Hunterdii/Awesome-Java)", icon="ℹ️")
 
 
     def render_home(self):
@@ -2833,7 +2558,6 @@ class ResumeApp:
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        st.toast("Check out these repositories: [AI-Nexus(AI/ML)](https://github.com/Hunterdii/AI-Nexus)", icon="ℹ️")
 
         # Call-to-Action with Streamlit navigation
         col1, col2, col3 = st.columns([1, 1, 1])
@@ -2842,7 +2566,7 @@ class ResumeApp:
                         help="Click to start analyzing your resume",
                         type="primary",
                         use_container_width=True):
-                cleaned_name = "🔍 RESUME ANALYZER".lower().replace(" ", "_").replace("🔍", "").strip()
+                cleaned_name = "resume analyzer".lower().replace(" ", "_").strip()
                 st.session_state.page = cleaned_name
                 st.rerun()
 
@@ -2850,7 +2574,6 @@ class ResumeApp:
         """Render the job search page"""
         render_job_search()
 
-        st.toast("Check out these repositories: [GeeksforGeeks-POTD](https://github.com/Hunterdii/GeeksforGeeks-POTD)", icon="ℹ️")
 
 
     def render_feedback_page(self):
@@ -2875,36 +2598,10 @@ class ResumeApp:
         with stats_tab:
             feedback_manager.render_feedback_stats()
 
-        st.toast("Check out these repositories: [TryHackMe Free Rooms](https://github.com/Hunterdii/tryhackme-free-rooms)", icon="ℹ️")
 
 
     def show_repo_notification(self):
-        message = """
-<div style="background-color: #1e1e1e; border-radius: 10px; border: 1px solid #4b6cb7; padding: 10px; margin: 10px 0; color: white;">
-    <div style="margin-bottom: 10px;">Check out these other repositories:</div>
-    <div style="margin-bottom: 5px;"><b>Hacking Resources:</b></div>
-    <ul style="margin-top: 0; padding-left: 20px;">
-        <li><a href="https://github.com/Hunterdii/tryhackme-free-rooms" target="_blank" style="color: #4CAF50;">TryHackMe Free Rooms</a></li>
-        <li><a href="https://github.com/Hunterdii/Awesome-Hacking" target="_blank" style="color: #4CAF50;">Awesome Hacking</a></li>
-    </ul>
-    <div style="margin-bottom: 5px;"><b>Programming Languages:</b></div>
-    <ul style="margin-top: 0; padding-left: 20px;">
-        <li><a href="https://github.com/Hunterdii/Awesome-Java" target="_blank" style="color: #4CAF50;">Awesome Java</a></li>
-        <li><a href="https://github.com/Hunterdii/30-Days-Of-Rust" target="_blank" style="color: #4CAF50;">30 Days Of Rust</a></li>
-    </ul>
-    <div style="margin-bottom: 5px;"><b>Data Structures & Algorithms:</b></div>
-    <ul style="margin-top: 0; padding-left: 20px;">
-        <li><a href="https://github.com/Hunterdii/GeeksforGeeks-POTD" target="_blank" style="color: #4CAF50;">GeeksforGeeks POTD</a></li>
-        <li><a href="https://github.com/Hunterdii/Leetcode-POTD" target="_blank" style="color: #4CAF50;">Leetcode POTD</a></li>
-    </ul>
-    <div style="margin-bottom: 5px;"><b>AI/ML Projects:</b></div>
-    <ul style="margin-top: 0; padding-left: 20px;">
-        <li><a href="https://github.com/Hunterdii/AI-Nexus" target="_blank" style="color: #4CAF50;">AI Nexus</a></li>
-    </ul>
-    <div style="margin-top: 10px;">If you find this project helpful, please consider ⭐ starring the repo!</div>
-</div>
-"""
-        st.sidebar.markdown(message, unsafe_allow_html=True)
+        pass
 
 
     def main(self):
@@ -2913,14 +2610,13 @@ class ResumeApp:
         
         # Admin login/logout in sidebar
         with st.sidebar:
-            st_lottie(self.load_lottie_url("https://assets5.lottiefiles.com/packages/lf20_xyadoh9h.json"), height=200, key="sidebar_animation")
-            st.title("Smart Resume AI")
-            st.markdown("---")
+            st.markdown('<div style="padding: 16px 0 4px 0; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 22px; font-weight: 600; color: #33FF33;">SmartCV</div>', unsafe_allow_html=True)
+            st.markdown('<div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; color: #116611; margin-bottom: 20px;">AI Resume Optimizer</div>', unsafe_allow_html=True)
             
             # Navigation buttons
             for page_name in self.pages.keys():
                 if st.button(page_name, use_container_width=True):
-                    cleaned_name = page_name.lower().replace(" ", "_").replace("🏠", "").replace("🔍", "").replace("📝", "").replace("📊", "").replace("🎯", "").replace("💬", "").replace("ℹ️", "").strip()
+                    cleaned_name = page_name.lower().replace(" ", "_").strip()
                     st.session_state.page = cleaned_name
                     st.rerun()
 
@@ -2941,7 +2637,7 @@ class ResumeApp:
                     except Exception as e:
                         st.error(f"Error during logout: {str(e)}")
             else:
-                with st.expander("👤 Admin Login"):
+                with st.expander("ADMIN LOGIN"):
                     admin_email_input = st.text_input("Email", key="admin_email_input")
                     admin_password = st.text_input("Password", type="password", key="admin_password_input")
                     if st.button("Login", key="login_button"):
@@ -2970,7 +2666,7 @@ class ResumeApp:
         current_page = st.session_state.get('page', 'home')
         
         # Create a mapping of cleaned page names to original names
-        page_mapping = {name.lower().replace(" ", "_").replace("🏠", "").replace("🔍", "").replace("📝", "").replace("📊", "").replace("🎯", "").replace("💬", "").replace("ℹ️", "").strip(): name 
+        page_mapping = {name.lower().replace(" ", "_").strip(): name 
                        for name in self.pages.keys()}
         
         # Render the appropriate page

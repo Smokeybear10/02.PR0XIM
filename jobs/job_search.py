@@ -83,15 +83,14 @@ def render_company_section():
             padding: 1rem 0;
         }
         .company-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
+            background: rgba(51, 255, 51, 0.03);
+            border-radius: 0px;
             padding: 1rem;
-            transition: transform 0.2s;
             cursor: pointer;
+            font-family: "JetBrains Mono", monospace;
         }
         .company-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(51, 255, 51, 0.04);
         }
         .company-header {
             display: flex;
@@ -109,16 +108,17 @@ def render_company_section():
             margin-top: 0.5rem;
         }
         .company-category {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(51, 255, 51, 0.05);
             padding: 0.2rem 0.5rem;
-            border-radius: 15px;
+            border-radius: 0px;
             font-size: 0.8rem;
+            font-family: "JetBrains Mono", monospace;
         }
         </style>
     """, unsafe_allow_html=True)
 
     # Featured Companies
-    st.markdown("### 🏢 Featured Companies")
+    st.markdown("### // FEATURED COMPANIES")
     
     tabs = st.tabs(["All Companies", "Tech Giants", "Indian Tech", "Global Corps"])
     
@@ -136,7 +136,7 @@ def render_company_section():
                                 <i class="{company['icon']} company-icon" style="color: {company['color']}"></i>
                                 <h3 style="margin: 0;">{company['name']}</h3>
                             </div>
-                            <p style="margin: 0.5rem 0; color: #888;">{company['description']}</p>
+                            <p style="margin: 0.5rem 0; color: #22AA22;">{company['description']}</p>
                             <div class="company-categories">
                                 {' '.join(f'<span class="company-category">{cat}</span>' for cat in company['categories'])}
                             </div>
@@ -159,36 +159,34 @@ def render_market_insights():
             padding: 1rem 0;
         }
         .insight-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
+            background: rgba(51, 255, 51, 0.03);
+            border-radius: 0px;
             padding: 1rem;
             text-align: center;
-            transition: transform 0.3s ease, background 0.3s ease;
+            font-family: "JetBrains Mono", monospace;
         }
         .insight-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(51, 255, 51, 0.04);
         }
         .insight-icon {
             font-size: 2rem;
             margin-bottom: 0.5rem;
-            color: #00bfa5;
+            color: #33FF33;
         }
         .growth-text {
-            color: #00c853;
+            color: #33FF33;
             font-weight: bold;
         }
         .salary-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
+            background: rgba(51, 255, 51, 0.03);
+            border-radius: 0px;
             padding: 1.5rem;
             margin-bottom: 1rem;
-            transition: all 0.3s ease;
-            border-left: 4px solid #00bfa5;
+            border-left: 4px solid #33FF33;
+            font-family: "JetBrains Mono", monospace;
         }
         .salary-card:hover {
-            transform: translateX(10px);
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(51, 255, 51, 0.04);
         }
         .salary-header {
             display: flex;
@@ -198,7 +196,7 @@ def render_market_insights():
         .role-icon {
             font-size: 1.5rem;
             margin-right: 1rem;
-            color: #00bfa5;
+            color: #33FF33;
         }
         .salary-details {
             display: flex;
@@ -207,16 +205,16 @@ def render_market_insights():
             margin-top: 0.5rem;
         }
         .salary-tag {
-            background: rgba(0, 191, 165, 0.1);
-            color: #00bfa5;
+            background: rgba(51, 255, 51, 0.05);
+            color: #33FF33;
             padding: 0.3rem 0.8rem;
-            border-radius: 20px;
+            border-radius: 0px;
             font-size: 0.9rem;
         }
         .experience-tag {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(51, 255, 51, 0.05);
             padding: 0.3rem 0.8rem;
-            border-radius: 20px;
+            border-radius: 0px;
             font-size: 0.9rem;
         }
         .role-title {
@@ -226,7 +224,7 @@ def render_market_insights():
         }
         .salary-range {
             font-size: 1.1rem;
-            color: #00bfa5;
+            color: #33FF33;
             font-weight: bold;
         }
         .role-icons {
@@ -235,7 +233,7 @@ def render_market_insights():
         </style>
     """, unsafe_allow_html=True)
 
-    st.markdown("### 📊 Job Market Insights")
+    st.markdown("### // JOB MARKET INSIGHTS")
     
     tabs = st.tabs(["Trending Skills", "Top Locations", "Salary Insights"])
     
@@ -296,7 +294,7 @@ def render_market_insights():
 
 def render_job_search():
     """Render job search page with enhanced features"""
-    st.title("🔍 Smart Job Search")
+    st.title("SMART JOB SEARCH")
     st.markdown("Find Your Dream Job Across Multiple Platforms")
     
     # Market Insights Section (Above Search)
@@ -307,20 +305,23 @@ def render_job_search():
         st.markdown("""
             <style>
             .search-container {
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 10px;
+                background: rgba(51, 255, 51, 0.03);
+                border-radius: 0px;
                 padding: 20px;
                 margin-bottom: 20px;
+                font-family: "JetBrains Mono", monospace;
             }
             .search-title {
-                color: #00bfa5;
+                color: #33FF33;
                 font-weight: bold;
                 margin-bottom: 5px;
+                font-family: "JetBrains Mono", monospace;
             }
             .search-description {
-                color: #888;
+                color: #22AA22;
                 font-size: 0.9rem;
                 margin-bottom: 20px;
+                font-family: "JetBrains Mono", monospace;
             }
             </style>
         """, unsafe_allow_html=True)
@@ -336,16 +337,16 @@ def render_job_search():
             default_index=0,
             orientation="horizontal",
             styles={
-                "container": {"padding": "0px", "margin-bottom": "20px"},
+                "container": {"padding": "0px", "margin-bottom": "20px", "font-family": "\"JetBrains Mono\", monospace"},
                 "icon": {"font-size": "18px"},
-                "nav-link": {"font-size": "16px", "text-align": "center", "padding": "10px", "border-radius": "5px"},
-                "nav-link-selected": {"background-color": "#00bfa5", "font-weight": "bold"},
+                "nav-link": {"font-size": "16px", "text-align": "center", "padding": "10px", "border-radius": "0px", "font-family": "\"JetBrains Mono\", monospace"},
+                "nav-link-selected": {"background-color": "#33FF33", "color": "#0A0A0A", "font-weight": "bold", "border-radius": "0px"},
             }
         )
         
         # Display content based on selected tab
         if tabs == "Job Portal":
-            st.markdown('<h3 class="search-title"><i class="fas fa-search-dollar" style="color: #00bfa5;"></i> Search Jobs Across Multiple Platforms</h3>', unsafe_allow_html=True)
+            st.markdown('<h3 class="search-title"><i class="fas fa-search-dollar" style="color: #33FF33;"></i> Search Jobs Across Multiple Platforms</h3>', unsafe_allow_html=True)
             st.markdown('<p class="search-description">Find job opportunities from top job portals like LinkedIn, Indeed, Naukri, and Foundit</p>', unsafe_allow_html=True)
             
             # Search inputs
@@ -411,7 +412,7 @@ def render_job_search():
                                         location = city['text']
 
             # Advanced Filters
-            with st.expander("🎯 Advanced Filters"):
+            with st.expander("> Advanced Filters"):
                 st.markdown('<div class="filter-section">', unsafe_allow_html=True)
                 filter_cols = st.columns(3)
                 
@@ -442,39 +443,40 @@ def render_job_search():
                         st.markdown("""
                             <style>
                             .result-card {
-                                background: rgba(255, 255, 255, 0.05);
-                                border-radius: 10px;
+                                background: rgba(51, 255, 51, 0.03);
+                                border-radius: 0px;
                                 padding: 15px;
                                 margin-bottom: 10px;
-                                border-left: 4px solid #00bfa5;
-                                transition: transform 0.2s;
+                                border-left: 4px solid #33FF33;
+                                font-family: "JetBrains Mono", monospace;
                             }
                             .result-card:hover {
-                                transform: translateX(5px);
-                                background: rgba(255, 255, 255, 0.08);
+                                background: rgba(51, 255, 51, 0.04);
                             }
                             .portal-name {
-                                color: #00bfa5;
+                                color: #33FF33;
                                 font-weight: bold;
                                 font-size: 1.2rem;
+                                font-family: "JetBrains Mono", monospace;
                             }
                             .portal-link {
                                 display: inline-block;
-                                background: #00bfa5;
-                                color: white !important;
+                                background: #33FF33;
+                                color: #0A0A0A !important;
                                 padding: 5px 15px;
-                                border-radius: 5px;
+                                border-radius: 0px;
                                 text-decoration: none;
                                 margin-top: 10px;
                                 font-weight: bold;
+                                font-family: "JetBrains Mono", monospace;
                             }
                             .portal-link:hover {
-                                background: #00a589;
+                                background: #22AA22;
                             }
                             </style>
                         """, unsafe_allow_html=True)
                         
-                        st.markdown("### 🎯 Job Search Results")
+                        st.markdown("### // SEARCH RESULTS")
                         for result in results:
                             with st.container():
                                 st.markdown(f"""
@@ -496,7 +498,7 @@ def render_job_search():
         
         else:
             # LinkedIn Job Scraper - only show the title once
-            st.markdown('<h3 class="search-title"><i class="fab fa-linkedin" style="color: #0A66C2;"></i> LinkedIn Job Scraper</h3>', unsafe_allow_html=True)
+            st.markdown('<h3 class="search-title"><i class="fab fa-linkedin" style="color: #33FF33;"></i> LinkedIn Job Scraper</h3>', unsafe_allow_html=True)
             st.markdown('<p class="search-description">Find real-time job listings directly from LinkedIn</p>', unsafe_allow_html=True)
             
             # Render LinkedIn scraper without showing the title again

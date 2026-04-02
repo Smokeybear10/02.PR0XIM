@@ -12,7 +12,7 @@ class JobPortal:
             {
                 "name": "LinkedIn",
                 "icon": "fab fa-linkedin",
-                "color": "#0A66C2",
+                "color": "#33FF33",
                 "url": "https://www.linkedin.com/jobs/search/?keywords={}&location={}&f_E={}",
                 "experience_param": ""
             },

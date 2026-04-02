@@ -35,11 +35,11 @@ class LinkedInScraper:
                     background: rgba(10, 102, 194, 0.05);
                     border-radius: 10px;
                     padding: 20px;
-                    border-left: 4px solid #0A66C2;
+                    border-left: 4px solid #33FF33;
                     margin-bottom: 20px;
                 }
                 .linkedin-title {
-                    color: #0A66C2;
+                    color: #33FF33;
                     font-weight: bold;
                 }
                 .linkedin-subtitle {
@@ -508,14 +508,14 @@ class LinkedInScraper:
                 border-radius: 10px;
                 padding: 1.5rem;
                 margin-bottom: 1rem;
-                border-left: 4px solid #0A66C2;
+                border-left: 4px solid #33FF33;
                 transition: transform 0.2s;
             }
             .job-card:hover {
                 background: rgba(255, 255, 255, 0.08);
             }
             .job-title {
-                color: #0A66C2;
+                color: #33FF33;
                 font-size: 1.3rem;
                 margin-bottom: 0.5rem;
             }
@@ -529,7 +529,7 @@ class LinkedInScraper:
             }
             .job-url-button {
                 display: inline-block;
-                background: #0A66C2;
+                background: #33FF33;
                 color: white;
                 padding: 0.5rem 1rem;
                 border-radius: 5px;
@@ -542,7 +542,7 @@ class LinkedInScraper:
             }
             .job-count {
                 background: rgba(10, 102, 194, 0.1);
-                color: #0A66C2;
+                color: #33FF33;
                 padding: 0.5rem 1rem;
                 border-radius: 5px;
                 margin-bottom: 1rem;
@@ -555,14 +555,14 @@ class LinkedInScraper:
             }
             .job-section-title {
                 font-weight: bold;
-                color: #0A66C2;
+                color: #33FF33;
                 margin-bottom: 0.5rem;
             }
             </style>
         """, unsafe_allow_html=True)
         
         # Display job count
-        st.markdown(f'<div class="job-count">🎯 Found {len(df_final)} matching jobs on LinkedIn</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="job-count">> Found {len(df_final)} matching jobs on LinkedIn</div>', unsafe_allow_html=True)
         
         # Display each job
         for i in range(len(df_final)):
@@ -577,7 +577,7 @@ class LinkedInScraper:
                 <div class="job-card">
                     <div class="job-title">{job_title}</div>
                     <div class="company-name">{company_name}</div>
-                    <div class="job-location">📍 {location}</div>
+                    <div class="job-location">{location}</div>
                 </div>
             """, unsafe_allow_html=True)
             

@@ -108,7 +108,7 @@ def template_card(title, description, image_url=None):
 
 def feedback_card(name, feedback, rating):
     """Render a modern feedback card with rating stars"""
-    stars = "⭐" * int(rating)
+    stars = "*" * int(rating)
     
     st.markdown(f"""
         <div class="card feedback-card">
@@ -184,10 +184,10 @@ def grid_layout(*elements):
 def alert(message, type="info"):
     """Display a modern alert message"""
     alert_types = {
-        "info": ("ℹ️", "var(--accent-color)"),
-        "success": ("✅", "var(--success-color)"),
-        "warning": ("⚠️", "var(--warning-color)"),
-        "error": ("❌", "var(--error-color)")
+        "info": ("[i]", "#33FF33"),
+        "success": ("[ok]", "#22AA22"),
+        "warning": ("[!]", "#33FF33"),
+        "error": ("[x]", "#33FF33")
     }
     icon, color = alert_types.get(type, alert_types["info"])
     
@@ -207,74 +207,69 @@ def about_section(title, description, team_members=None):
         </div>
         <style>
             .about-section {{
-                background: linear-gradient(135deg, #2D2D2D 0%, #1E1E1E 100%);
-                border-radius: 20px;
-                padding: 3rem 2rem;
-                margin: 2rem 0;
-                position: relative;
-                overflow: hidden;
+                background: #111111;
+                border: 1px solid #1E3A1E;
+                border-radius: 0px;
+                padding: 32px 20px;
+                margin: 16px 0;
             }}
-            
-            .about-section::before {{
-                content: '';
-                position: absolute;
-                top: -50%;
-                left: -50%;
-                width: 200%;
-                height: 200%;
-                background: radial-gradient(circle, rgba(0,180,219,0.1) 0%, transparent 70%);
-                animation: rotate 20s linear infinite;
-            }}
-            
+
             .about-section h2 {{
-                color: #E0E0E0;
-                margin-bottom: 1.5rem;
-                font-size: 2rem;
+                color: #33FF33;
+                margin-bottom: 16px;
+                font-size: 22px;
+                font-weight: 400;
+                font-family: "JetBrains Mono", monospace;
             }}
-            
+
             .about-description {{
-                color: #B0B0B0;
+                color: #22AA22;
                 line-height: 1.6;
-                font-size: 1.1rem;
+                font-size: 15px;
                 max-width: 800px;
-                margin-bottom: 2rem;
+                margin-bottom: 16px;
+                font-family: "JetBrains Mono", monospace;
             }}
-            
+
             .team-section {{
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 1.5rem;
-                margin-top: 2rem;
+                gap: 16px;
+                margin-top: 16px;
             }}
-            
+
             .team-member {{
-                background: #2D2D2D;
-                border-radius: 15px;
-                padding: 1.5rem;
+                background: #1A1A1A;
+                border-radius: 0px;
+                padding: 20px;
                 text-align: center;
-                border: 1px solid #3D3D3D;
-                transition: all 0.3s ease;
+                border: 1px solid #1E3A1E;
+                transition: border-color 120ms ease-out;
             }}
-            
+
             .team-member:hover {{
-                transform: translateY(-5px);
-                border-color: #00B4DB;
+                border-color: #33FF33;
             }}
-            
+
             .team-member img {{
                 width: 120px;
                 height: 120px;
                 border-radius: 50%;
-                margin-bottom: 1rem;
+                margin-bottom: 12px;
             }}
-            
+
             .team-member h3 {{
-                color: #E0E0E0;
-                margin-bottom: 0.5rem;
+                color: #33FF33;
+                margin-bottom: 4px;
+                font-family: "JetBrains Mono", monospace;
+                font-size: 15px;
+                font-weight: 500;
             }}
-            
+
             .team-member p {{
-                color: #B0B0B0;
+                color: #22AA22;
+                font-family: "JetBrains Mono", monospace;
+                font-size: 13px;
             }}
         </style>
     """, unsafe_allow_html=True)
@@ -331,90 +326,75 @@ def render_analytics_section(resume_uploaded=False, metrics=None):
             'downloads': 0,
             'score': 'N/A'
         }
-    
+
     # Views Card
     st.markdown("""
-        <div style='background: rgba(0, 20, 30, 0.3); border-radius: 15px; padding: 2rem; text-align: center; margin-bottom: 1rem;'>
-            <div style='color: #00bfa5; font-size: 2.5rem; margin-bottom: 1rem;'>
-                <i class='fas fa-eye'></i>
-            </div>
-            <h2 style='color: white; font-size: 1.5rem; margin-bottom: 1rem;'>Resume Views</h2>
-            <p style='color: #00bfa5; font-size: 2.5rem; font-weight: bold; margin: 0;'>{}</p>
+        <div style='background: #111111; border: 1px solid #1E3A1E; border-radius: 0px; padding: 24px; text-align: center; margin-bottom: 12px;'>
+            <div style='color: #116611; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-family: "JetBrains Mono", monospace;'>Resume Views</div>
+            <p style='color: #33FF33; font-size: 48px; font-weight: 600; margin: 0; font-family: "JetBrains Mono", monospace; font-variant-numeric: tabular-nums;'>{}</p>
         </div>
     """.format(metrics['views']), unsafe_allow_html=True)
-    
+
     # Downloads Card
     st.markdown("""
-        <div style='background: rgba(0, 20, 30, 0.3); border-radius: 15px; padding: 2rem; text-align: center; margin-bottom: 1rem;'>
-            <div style='color: #00bfa5; font-size: 2.5rem; margin-bottom: 1rem;'>
-                <i class='fas fa-download'></i>
-            </div>
-            <h2 style='color: white; font-size: 1.5rem; margin-bottom: 1rem;'>Downloads</h2>
-            <p style='color: #00bfa5; font-size: 2.5rem; font-weight: bold; margin: 0;'>{}</p>
+        <div style='background: #111111; border: 1px solid #1E3A1E; border-radius: 0px; padding: 24px; text-align: center; margin-bottom: 12px;'>
+            <div style='color: #116611; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-family: "JetBrains Mono", monospace;'>Downloads</div>
+            <p style='color: #33FF33; font-size: 48px; font-weight: 600; margin: 0; font-family: "JetBrains Mono", monospace; font-variant-numeric: tabular-nums;'>{}</p>
         </div>
     """.format(metrics['downloads']), unsafe_allow_html=True)
-    
+
     # Profile Score Card
     st.markdown("""
-        <div style='background: rgba(0, 20, 30, 0.3); border-radius: 15px; padding: 2rem; text-align: center; margin-bottom: 1rem;'>
-            <div style='color: #00bfa5; font-size: 2.5rem; margin-bottom: 1rem;'>
-                <i class='fas fa-chart-line'></i>
-            </div>
-            <h2 style='color: white; font-size: 1.5rem; margin-bottom: 1rem;'>Profile Score</h2>
-            <p style='color: #00bfa5; font-size: 2.5rem; font-weight: bold; margin: 0;'>{}</p>
+        <div style='background: #111111; border: 1px solid #1E3A1E; border-radius: 0px; padding: 24px; text-align: center; margin-bottom: 12px;'>
+            <div style='color: #116611; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-family: "JetBrains Mono", monospace;'>Profile Score</div>
+            <p style='color: #33FF33; font-size: 48px; font-weight: 600; margin: 0; font-family: "JetBrains Mono", monospace; font-variant-numeric: tabular-nums;'>{}</p>
         </div>
     """.format(metrics['score']), unsafe_allow_html=True)
 
 def render_activity_section(resume_uploaded=False):
     """Render the recent activity section"""
     st.markdown("""
-        <div style='background: rgba(0, 20, 30, 0.3); border-radius: 15px; padding: 2rem; height: 100%;'>
-            <h2 style='color: white; font-size: 1.5rem; margin-bottom: 1.5rem;'>
-                <i class='fas fa-history' style='color: #00bfa5; margin-right: 0.5rem;'></i> Recent Activity
-            </h2>
+        <div style='background: #111111; border: 1px solid #1E3A1E; border-radius: 0px; padding: 24px; height: 100%;'>
+            <h2 style='color: #116611; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; font-family: "JetBrains Mono", monospace;'>Recent Activity</h2>
     """, unsafe_allow_html=True)
-    
+
     if resume_uploaded:
         st.markdown("""
-            <div style='color: #ddd;'>
-                <p style='margin: 0.8rem 0; font-size: 1.1rem;'>• Resume uploaded and analyzed</p>
-                <p style='margin: 0.8rem 0; font-size: 1.1rem;'>• Generated optimization suggestions</p>
-                <p style='margin: 0.8rem 0; font-size: 1.1rem;'>• Updated profile score</p>
+            <div style='color: #22AA22; font-family: "JetBrains Mono", monospace; font-size: 14px;'>
+                <p style='margin: 8px 0;'>Resume uploaded and analyzed</p>
+                <p style='margin: 8px 0;'>Generated optimization suggestions</p>
+                <p style='margin: 8px 0;'>Updated profile score</p>
             </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-            <div style='text-align: center; padding: 2rem; color: #666;'>
-                <i class='fas fa-upload' style='font-size: 2.5rem; color: #00bfa5; margin-bottom: 1rem;'></i>
-                <p style='margin: 0; font-size: 1.1rem;'>Upload your resume to see activity</p>
+            <div style='text-align: center; padding: 32px 20px; color: #116611; font-family: "JetBrains Mono", monospace;'>
+                <p style='margin: 0; font-size: 14px;'>Upload your resume to see activity</p>
             </div>
         """, unsafe_allow_html=True)
-    
+
     st.markdown("</div>", unsafe_allow_html=True)
 
 def render_suggestions_section(resume_uploaded=False):
     """Render the suggestions section"""
     st.markdown("""
-        <div style='background: rgba(0, 20, 30, 0.3); border-radius: 15px; padding: 2rem; height: 100%;'>
-            <h2 style='color: white; font-size: 1.5rem; margin-bottom: 1.5rem;'>
-                <i class='fas fa-lightbulb' style='color: #00bfa5; margin-right: 0.5rem;'></i> Suggestions
-            </h2>
+        <div style='background: #111111; border: 1px solid #1E3A1E; border-radius: 0px; padding: 24px; height: 100%;'>
+            <h2 style='color: #116611; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; font-family: "JetBrains Mono", monospace;'>Suggestions</h2>
     """, unsafe_allow_html=True)
-    
+
     if resume_uploaded:
         st.markdown("""
-            <div style='color: #ddd;'>
-                <p style='margin: 0.8rem 0; font-size: 1.1rem;'>• Add more quantifiable achievements</p>
-                <p style='margin: 0.8rem 0; font-size: 1.1rem;'>• Include relevant keywords</p>
-                <p style='margin: 0.8rem 0; font-size: 1.1rem;'>• Optimize formatting</p>
+            <div style='color: #33FF33; font-family: "JetBrains Mono", monospace; font-size: 14px;'>
+                <p style='margin: 8px 0;'>Add more quantifiable achievements</p>
+                <p style='margin: 8px 0;'>Include relevant keywords</p>
+                <p style='margin: 8px 0;'>Optimize formatting</p>
             </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-            <div style='text-align: center; padding: 2rem; color: #666;'>
-                <i class='fas fa-file-alt' style='font-size: 2.5rem; color: #00bfa5; margin-bottom: 1rem;'></i>
-                <p style='margin: 0; font-size: 1.1rem;'>Upload your resume to get suggestions</p>
+            <div style='text-align: center; padding: 32px 20px; color: #116611; font-family: "JetBrains Mono", monospace;'>
+                <p style='margin: 0; font-size: 14px;'>Upload your resume to get suggestions</p>
             </div>
         """, unsafe_allow_html=True)
-    
+
     st.markdown("</div>", unsafe_allow_html=True)

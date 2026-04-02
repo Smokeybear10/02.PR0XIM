@@ -13,88 +13,86 @@ class DashboardManager:
     def __init__(self):
         self.conn = get_database_connection()
         self.colors = {
-            'primary': '#4CAF50',
-            'secondary': '#2196F3',
-            'warning': '#FFA726',
-            'danger': '#F44336',
-            'info': '#00BCD4',
-            'success': '#66BB6A',
-            'purple': '#9C27B0',
-            'background': '#1E1E1E',
-            'card': '#2D2D2D',
-            'text': '#FFFFFF',
-            'subtext': '#B0B0B0'
+            'primary': '#33FF33',
+            'secondary': '#22AA22',
+            'warning': '#33FF33',
+            'danger': '#33FF33',
+            'info': '#33FF33',
+            'success': '#33FF33',
+            'purple': '#33FF33',
+            'background': '#0A0A0A',
+            'card': '#111111',
+            'text': '#33FF33',
+            'subtext': '#22AA22'
         }
         
     def apply_dashboard_style(self):
         """Apply custom styling for dashboard"""
         st.markdown("""
             <style>
+                * {
+                    font-family: "JetBrains Mono", monospace !important;
+                }
+
                 .dashboard-title {
                     font-size: 2.5rem;
                     font-weight: bold;
                     margin-bottom: 2rem;
-                    color: white;
+                    color: #33FF33;
                     text-align: center;
                 }
-                
+
                 .metric-card {
-                    background-color: #2D2D2D;
-                    border-radius: 15px;
+                    background-color: #111111;
+                    border-radius: 0px;
                     padding: 1.5rem;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                    transition: transform 0.3s ease;
                     height: 100%;
                 }
-                
-                .metric-card:hover {
-                    transform: translateY(-5px);
-                }
-                
+
                 .metric-value {
                     font-size: 2.5rem;
                     font-weight: bold;
-                    color: #4CAF50;
+                    color: #33FF33;
                     margin: 0.5rem 0;
                 }
-                
+
                 .metric-label {
                     font-size: 1rem;
-                    color: #B0B0B0;
+                    color: #22AA22;
                 }
-                
+
                 .trend-up {
-                    color: #4CAF50;
+                    color: #33FF33;
                     font-size: 1.2rem;
                 }
-                
+
                 .trend-down {
-                    color: #F44336;
+                    color: #33FF33;
                     font-size: 1.2rem;
                 }
-                
+
                 .chart-container {
-                    background-color: #2D2D2D;
-                    border-radius: 15px;
+                    background-color: #111111;
+                    border-radius: 0px;
                     padding: 1.5rem;
                     margin: 1rem 0;
                 }
-                
+
                 .section-title {
                     font-size: 1.5rem;
-                    color: white;
+                    color: #33FF33;
                     margin: 2rem 0 1rem 0;
                 }
-                
+
                 .stPlotlyChart {
-                    background-color: #2D2D2D;
-                    border-radius: 15px;
+                    background-color: #111111;
+                    border-radius: 0px;
                     padding: 1rem;
                 }
-                
+
                 div[data-testid="stHorizontalBlock"] > div {
-                    background-color: #2D2D2D;
-                    border-radius: 15px;
+                    background-color: #111111;
+                    border-radius: 0px;
                     padding: 1rem;
                     margin: 0.5rem;
                 }
@@ -242,28 +240,28 @@ class DashboardManager:
 
     def render_admin_panel(self):
         """Render admin panel with data management tools"""
-        st.sidebar.markdown("### 👋 Welcome Admin!")
+        st.sidebar.markdown("### > admin_session active")
         st.sidebar.markdown("---")
-        
-        if st.sidebar.button("🚪 Logout"):
+
+        if st.sidebar.button("Logout"):
             st.session_state.is_admin = False
             st.rerun()
-            
-        st.sidebar.markdown("### 🛠️ Admin Tools")
-        
+
+        st.sidebar.markdown("### // ADMIN TOOLS")
+
         # Data Export Options
         export_format = st.sidebar.selectbox(
             "Export Format",
             ["Excel", "CSV", "JSON"],
             key="export_format"
         )
-        
-        if st.sidebar.button("📥 Export Data"):
+
+        if st.sidebar.button("Export Data"):
             if export_format == "Excel":
                 excel_data = self.export_to_excel()
                 if excel_data:
                     st.sidebar.download_button(
-                        "⬇️ Download Excel",
+                        "Download Excel",
                         data=excel_data,
                         file_name=f"resume_data_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -272,7 +270,7 @@ class DashboardManager:
                 csv_data = self.export_to_csv()
                 if csv_data:
                     st.sidebar.download_button(
-                        "⬇️ Download CSV",
+                        "Download CSV",
                         data=csv_data,
                         file_name=f"resume_data_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
                         mime="text/csv"
@@ -281,14 +279,14 @@ class DashboardManager:
                 json_data = self.export_to_json()
                 if json_data:
                     st.sidebar.download_button(
-                        "⬇️ Download JSON",
+                        "Download JSON",
                         data=json_data,
                         file_name=f"resume_data_{datetime.now().strftime('%Y%m%d_%H%M')}.json",
                         mime="application/json"
                     )
 
         # Database Stats
-        st.sidebar.markdown("### 📊 Database Stats")
+        st.sidebar.markdown("### // DB STATS")
         stats = self.get_database_stats()
         st.sidebar.markdown(f"""
             - Total Resumes: {stats['total_resumes']}
@@ -350,8 +348,8 @@ class DashboardManager:
             st.markdown("""
             <style>
             .resume-data {
-                background-color: #2D2D2D;
-                border-radius: 10px;
+                background-color: #111111;
+                border-radius: 0px;
                 padding: 1rem;
                 margin-bottom: 1rem;
             }
@@ -443,8 +441,8 @@ class DashboardManager:
             st.markdown("""
             <style>
             .admin-logs {
-                background-color: #2D2D2D;
-                border-radius: 10px;
+                background-color: #111111;
+                border-radius: 0px;
                 padding: 1rem;
             }
             </style>
