@@ -106,6 +106,7 @@ export default function AnalyzerPage() {
             value={category}
             onChange={(e) => { setCategory(e.target.value); setRole('') }}
             className="input-minimal"
+            aria-label="Job category"
           >
             <option value="">Select category</option>
             {categories.map((cat) => (
@@ -120,6 +121,7 @@ export default function AnalyzerPage() {
             onChange={(e) => setRole(e.target.value)}
             disabled={!category}
             className="input-minimal disabled:opacity-25"
+            aria-label="Job role"
           >
             <option value="">Select role</option>
             {availableRoles.map((r) => (

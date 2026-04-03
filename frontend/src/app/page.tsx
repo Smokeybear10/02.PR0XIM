@@ -7,18 +7,18 @@ export default function Home() {
       <div
         className="ambient-orb"
         style={{ width: 400, height: 400, top: '10%', left: '15%', background: 'rgba(100, 120, 200, 0.03)' }}
-        aria-hidden
+        aria-hidden="true"
       />
       <div
         className="ambient-orb"
         style={{ width: 300, height: 300, bottom: '20%', right: '10%', background: 'rgba(140, 100, 180, 0.025)', animationDelay: '-4s' }}
-        aria-hidden
+        aria-hidden="true"
       />
 
       {/* Monogram */}
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
-        aria-hidden
+        aria-hidden="true"
       >
         <span
           className="font-display font-black leading-none animate-monogram"

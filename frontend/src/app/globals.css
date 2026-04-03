@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme inline {
@@ -9,13 +8,13 @@
   --color-border-focus: rgba(255, 255, 255, 0.2);
   --color-text-primary: rgba(240, 240, 248, 0.85);
   --color-text-secondary: rgba(240, 240, 248, 0.5);
-  --color-text-muted: rgba(240, 240, 248, 0.25);
+  --color-text-muted: rgba(240, 240, 248, 0.4);
   --color-accent: rgba(240, 240, 248, 0.08);
   --color-score-high: #4ade80;
   --color-score-mid: #fbbf24;
   --color-score-low: rgba(240, 240, 248, 0.3);
-  --font-display: 'Oswald', sans-serif;
-  --font-body: 'Barlow', sans-serif;
+  --font-display: var(--font-oswald), 'Oswald', sans-serif;
+  --font-body: var(--font-barlow), 'Barlow', sans-serif;
 }
 
 :root {
@@ -25,7 +24,7 @@
 body {
   background: var(--background);
   color: rgba(240, 240, 248, 0.85);
-  font-family: 'Barlow', sans-serif;
+  font-family: var(--font-barlow), 'Barlow', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -42,6 +41,8 @@ body::before {
   pointer-events: none;
   z-index: 9999;
   opacity: 0.4;
+  will-change: transform;
+  contain: strict;
 }
 
 /* Ambient radial glow */
@@ -97,11 +98,36 @@ body::after {
   color: rgba(240, 240, 248, 0.15);
 }
 
-/* Focus ring reset */
+/* Focus styles */
 input:focus,
 textarea:focus,
 select:focus {
   outline: none;
+}
+
+*:focus-visible {
+  outline: 1px solid rgba(240, 240, 248, 0.4);
+  outline-offset: 2px;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* ========================================
@@ -164,7 +190,7 @@ select:focus {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 100px;
   background: transparent;
-  font-family: 'Oswald', sans-serif;
+  font-family: var(--font-oswald), 'Oswald', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   transition: all 0.25s ease;
@@ -190,7 +216,7 @@ select:focus {
   border-radius: 100px;
   background: rgba(240, 240, 248, 0.85);
   color: #080a10;
-  font-family: 'Oswald', sans-serif;
+  font-family: var(--font-oswald), 'Oswald', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   transition: all 0.25s ease;
@@ -216,11 +242,11 @@ select:focus {
    ======================================== */
 
 .label {
-  font-family: 'Oswald', sans-serif;
+  font-family: var(--font-oswald), 'Oswald', sans-serif;
   font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 0.25em;
-  color: rgba(240, 240, 248, 0.25);
+  color: rgba(240, 240, 248, 0.4);
 }
 
 /* ========================================
@@ -233,7 +259,7 @@ select:focus {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0;
   color: rgba(240, 240, 248, 0.85);
-  font-family: 'Barlow', sans-serif;
+  font-family: var(--font-barlow), 'Barlow', sans-serif;
   font-size: 0.875rem;
   padding: 10px 0;
   width: 100%;

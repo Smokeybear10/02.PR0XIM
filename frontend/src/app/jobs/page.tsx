@@ -98,6 +98,7 @@ export default function JobsPage() {
                   className="pill-btn px-5 py-1.5 text-xs text-text-secondary shrink-0"
                 >
                   View Jobs
+                  <span className="sr-only"> on {job.portal} (opens in new tab)</span>
                 </a>
               </div>
             </GlassCard>

@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import Logo from '@/components/Logo'
 
 const NAV_ITEMS = [
   { label: 'Analyze', href: '/analyzer' },
   { label: 'Build', href: '/builder' },
-  { label: 'Dashboard', href: '/dashboard' },
   { label: 'Jobs', href: '/jobs' },
   { label: 'About', href: '/about' },
 ]
@@ -23,9 +23,10 @@ export default function Nav() {
         WebkitBackdropFilter: 'blur(24px) saturate(1.2)',
       }}
     >
-      <div className="max-w-6xl mx-auto px-6 h-10 flex items-center justify-between">
-        <Link href="/" className="font-display text-xs font-semibold tracking-[0.2em] text-text-primary uppercase">
-          DR4FT
+      <div className="px-10 h-10 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5">
+          <Logo size={20} />
+          <span className="font-display text-xs font-semibold tracking-[0.2em] text-text-primary uppercase">DR4FT</span>
         </Link>
 
         <div className="flex items-center gap-7">

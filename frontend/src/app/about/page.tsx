@@ -40,6 +40,7 @@ export default function AboutPage() {
                 className="pill-btn px-5 py-1.5 text-xs text-text-secondary"
               >
                 {link.label}
+                <span className="sr-only"> (opens in new tab)</span>
               </a>
             ))}
           </div>

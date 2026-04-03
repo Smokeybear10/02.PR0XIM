@@ -98,6 +98,8 @@ export default function FeedbackPage() {
                   <button
                     key={star}
                     onClick={() => setRating(star)}
+                    aria-label={`Rate ${star} out of 5`}
+                    aria-pressed={star <= rating}
                     className={`
                       w-10 h-10 rounded-full border transition-all duration-200
                       ${star <= rating
@@ -125,6 +127,7 @@ export default function FeedbackPage() {
                 value={usability}
                 onChange={(e) => setUsability(Number(e.target.value))}
                 className="w-full"
+                aria-label="Usability score"
               />
               <div className="flex justify-between">
                 <span className="text-text-muted text-xs font-body">0</span>
@@ -143,6 +146,7 @@ export default function FeedbackPage() {
                 value={satisfaction}
                 onChange={(e) => setSatisfaction(Number(e.target.value))}
                 className="w-full"
+                aria-label="Feature satisfaction"
               />
               <div className="flex justify-between">
                 <span className="text-text-muted text-xs font-body">0</span>

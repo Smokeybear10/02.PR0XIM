@@ -9,7 +9,7 @@ export default function GlassCard({ title, children, className, interactive }: P
   return (
     <div className={`glass ${interactive ? 'glass-interactive' : ''} p-6 ${className ?? ''}`}>
       {title && (
-        <div className="label mb-4">{title}</div>
+        <h3 className="label mb-4">{title}</h3>
       )}
       {children}
     </div>

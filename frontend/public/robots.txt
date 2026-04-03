@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://dr4ft.vercel.app/sitemap.xml

@@ -44,6 +44,10 @@ export default function FileUpload({ onFileSelect, accept = '.pdf,.docx' }: Prop
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onClick={() => inputRef.current?.click()}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputRef.current?.click() } }}
+      role="button"
+      tabIndex={0}
+      aria-label={fileName ? `Resume uploaded: ${fileName}. Click to replace` : 'Upload your resume. Accepts PDF and DOCX'}
       className={`
         glass glass-interactive cursor-pointer transition-all duration-300 p-12 text-center
         ${isDragging ? 'border-border-focus scale-[1.01]' : ''}
@@ -55,11 +59,13 @@ export default function FileUpload({ onFileSelect, accept = '.pdf,.docx' }: Prop
         accept={accept}
         onChange={handleChange}
         className="hidden"
+        aria-hidden="true"
+        tabIndex={-1}
       />
       {fileName ? (
         <div className="space-y-2">
           <div className="w-12 h-12 rounded-full border border-score-high/30 mx-auto flex items-center justify-center mb-3">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-score-high">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-score-high" aria-hidden="true">
               <path d="M20 6L9 17l-5-5" />
             </svg>
           </div>
@@ -69,7 +75,7 @@ export default function FileUpload({ onFileSelect, accept = '.pdf,.docx' }: Prop
       ) : (
         <div className="space-y-3">
           <div className="w-12 h-12 rounded-full border border-border-subtle mx-auto flex items-center justify-center">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-muted">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-muted" aria-hidden="true">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
             </svg>
           </div>
