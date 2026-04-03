@@ -36,7 +36,7 @@ export default function Home() {
       <div className="relative z-10">
         <div className="space-y-4">
           <p className="label text-2xl tracking-[0.4em] mb-0 stagger-1">AI Resume Optimizer</p>
-          <h1 className="font-display text-[10rem] md:text-[14rem] font-bold tracking-[0.08em] text-text-primary uppercase leading-none !mt-1 stagger-2">
+          <h1 className="font-display text-[5rem] sm:text-[8rem] md:text-[14rem] font-bold tracking-[0.08em] text-text-primary uppercase leading-none !mt-1 stagger-2">
             DR4FT
           </h1>
           <p className="text-text-secondary text-lg font-body max-w-md mx-auto leading-relaxed stagger-3">
