@@ -23,10 +23,13 @@ export default function Nav() {
         WebkitBackdropFilter: 'blur(24px) saturate(1.2)',
       }}
     >
-      <div className="px-10 h-10 flex items-center justify-between">
+      <div className="px-4 sm:px-5 h-10 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <Logo size={20} />
-          <span className="font-display text-xs font-semibold tracking-[0.2em] text-text-primary uppercase">DR4FT</span>
+          <div className="flex flex-col leading-none">
+            <span className="font-display text-[15px] sm:text-[17px] font-bold tracking-[0.25em] text-text-primary uppercase">DR4FT</span>
+            <span className="mt-0.5 text-[9px] font-medium tracking-[0.05em] text-text-muted">by Thomas Ou</span>
+          </div>
         </Link>
 
         <div className="flex items-center gap-7">
@@ -38,12 +41,11 @@ export default function Nav() {
                 key={item.href}
                 href={item.href}
                 className={`
-                  nav-link font-display text-[10px] tracking-[0.22em] uppercase transition-colors duration-300
-                  ${isActive ? 'text-text-primary' : 'text-text-muted hover:text-text-secondary'}
+                  font-display text-[10px] tracking-[0.22em] uppercase transition-colors duration-300
+                  ${isActive ? 'text-text-primary underline underline-offset-4 decoration-1' : 'text-text-muted hover:text-text-secondary'}
                 `}
               >
                 {item.label}
-                {isActive && <span className="nav-dot" />}
               </Link>
             )
           })}

@@ -23,7 +23,7 @@ export default function Home() {
         <span
           className="font-display font-black leading-none animate-monogram"
           style={{
-            fontSize: 'clamp(220px, 32vw, 520px)',
+            fontSize: 'clamp(300px, 45vw, 700px)',
             color: 'transparent',
             WebkitTextStroke: '1px rgba(240, 240, 248, 0.025)',
           }}
@@ -34,21 +34,21 @@ export default function Home() {
 
       {/* Content */}
       <div className="relative z-10">
-        <div className="space-y-5">
-          <p className="label stagger-1">AI Resume Optimizer</p>
-          <h1 className="font-display text-7xl md:text-9xl font-bold tracking-[0.08em] text-text-primary uppercase stagger-2">
+        <div className="space-y-4">
+          <p className="label text-2xl tracking-[0.4em] mb-0 stagger-1">AI Resume Optimizer</p>
+          <h1 className="font-display text-[10rem] md:text-[14rem] font-bold tracking-[0.08em] text-text-primary uppercase leading-none !mt-1 stagger-2">
             DR4FT
           </h1>
-          <p className="text-text-secondary text-xl font-body max-w-sm mx-auto leading-relaxed stagger-3">
+          <p className="text-text-secondary text-lg font-body max-w-md mx-auto leading-relaxed stagger-3">
             Beat the ATS. Land the interview.
           </p>
         </div>
 
-        <div className="flex items-center justify-center gap-4 mt-10 stagger-4">
-          <Link href="/analyzer" className="pill-btn-filled px-12 py-3.5 text-sm font-medium tracking-wider inline-block">
+        <div className="flex items-center justify-center gap-4 mt-6 stagger-4">
+          <Link href="/analyzer" className="pill-btn-filled px-8 py-2.5 text-xs font-medium tracking-wider inline-block">
             Get Started
           </Link>
-          <Link href="/about" className="pill-btn px-12 py-3.5 text-sm text-text-secondary font-medium tracking-wider inline-block">
+          <Link href="/about" className="pill-btn px-8 py-2.5 text-xs text-text-secondary font-medium tracking-wider inline-block">
             Learn More
           </Link>
         </div>
