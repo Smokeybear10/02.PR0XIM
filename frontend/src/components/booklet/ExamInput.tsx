@@ -10,7 +10,7 @@ type Props = {
   className?: string
 }
 
-export default function MinimalInput({
+export default function ExamInput({
   label,
   value,
   onChange,

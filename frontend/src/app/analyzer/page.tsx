@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import GlassCard from '@/components/GlassCard'
-import PillButton from '@/components/PillButton'
-import ScoreRing from '@/components/ScoreRing'
-import FileUpload from '@/components/FileUpload'
+import ExamCard from '@/components/booklet/ExamCard'
+import ExamButton from '@/components/booklet/ExamButton'
+import GradeDisplay from '@/components/booklet/GradeDisplay'
+import PaperUpload from '@/components/booklet/PaperUpload'
 import { getRoles, analyzeResume, analyzeResumeAI, type JobRoles } from '@/lib/api'
 
 type DisplayResult = {
@@ -70,25 +70,25 @@ export default function AnalyzerPage() {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
-          <GlassCard title="Category">
+          <ExamCard title="Category">
             <select value={category} onChange={(e) => { setCategory(e.target.value); setRole('') }} className="exam-select" aria-label="Job category">
               <option value="">Select category</option>
               {categories.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
-          </GlassCard>
-          <GlassCard title="Role">
+          </ExamCard>
+          <ExamCard title="Role">
             <select value={role} onChange={(e) => setRole(e.target.value)} disabled={!category} className="exam-select" style={{ opacity: !category ? 0.3 : 1 }} aria-label="Job role">
               <option value="">Select role</option>
               {availableRoles.map((r) => <option key={r} value={r}>{r}</option>)}
             </select>
-          </GlassCard>
+          </ExamCard>
         </div>
 
-        <div style={{ marginBottom: 16 }}><FileUpload onFileSelect={setFile} /></div>
+        <div style={{ marginBottom: 16 }}><PaperUpload onFileSelect={setFile} /></div>
 
-        <PillButton onClick={handleAnalyze} disabled={!file || !category || !role || analyzing} variant="filled" fullWidth>
+        <ExamButton onClick={handleAnalyze} disabled={!file || !category || !role || analyzing} variant="filled" fullWidth>
           {analyzing ? 'Grading...' : 'Submit for Grading'}
-        </PillButton>
+        </ExamButton>
 
         {error && (
           <div style={{ marginTop: 16, padding: '12px 16px', border: '1px solid rgba(185,28,28,0.2)', background: 'rgba(185,28,28,0.04)' }}>
@@ -108,7 +108,7 @@ export default function AnalyzerPage() {
             <div style={{ display: 'grid', gridTemplateColumns: `repeat(${scores.length}, 1fr)`, gap: 0, border: '1px solid rgba(0,0,0,0.08)' }}>
               {scores.map((item, i) => (
                 <div key={item.label} style={{ padding: '28px 24px', borderRight: i < scores.length - 1 ? '1px solid rgba(0,0,0,0.08)' : 'none' }}>
-                  <ScoreRing score={item.score} label={item.label} />
+                  <GradeDisplay score={item.score} label={item.label} />
                 </div>
               ))}
             </div>

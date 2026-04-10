@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import GlassCard from '@/components/GlassCard'
-import PillButton from '@/components/PillButton'
-import MinimalInput from '@/components/MinimalInput'
+import ExamCard from '@/components/booklet/ExamCard'
+import ExamButton from '@/components/booklet/ExamButton'
+import ExamInput from '@/components/booklet/ExamInput'
 import { searchJobs, getMarketInsights, type JobResult } from '@/lib/api'
 
 export default function JobsPage() {
@@ -43,11 +43,11 @@ export default function JobsPage() {
           <h1 className="tool-header-title">Job Search</h1>
         </div>
 
-        <GlassCard>
+        <ExamCard>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
-            <MinimalInput label="Keywords" value={query} onChange={setQuery} placeholder="Software Engineer" required />
+            <ExamInput label="Keywords" value={query} onChange={setQuery} placeholder="Software Engineer" required />
             <div>
-              <MinimalInput label="Location" value={detectingLocation ? 'Detecting...' : location} onChange={setLocation} placeholder="San Francisco, CA" />
+              <ExamInput label="Location" value={detectingLocation ? 'Detecting...' : location} onChange={setLocation} placeholder="San Francisco, CA" />
               <button
                 type="button"
                 onClick={() => {
@@ -69,10 +69,10 @@ export default function JobsPage() {
               </button>
             </div>
           </div>
-          <PillButton onClick={handleSearch} disabled={!query || searching} variant="filled" fullWidth>
+          <ExamButton onClick={handleSearch} disabled={!query || searching} variant="filled" fullWidth>
             {searching ? 'Searching...' : 'Search Jobs'}
-          </PillButton>
-        </GlassCard>
+          </ExamButton>
+        </ExamCard>
 
         {error && <div style={{ marginTop: 16, padding: 12, border: '1px solid rgba(185,28,28,0.2)', textAlign: 'center' }}><p style={{ color: '#B91C1C', fontSize: 13 }}>{error}</p></div>}
 
@@ -92,14 +92,14 @@ export default function JobsPage() {
               </div>
             ))}
             {insights && (
-              <GlassCard title="Market Insights" className="mt-6">
+              <ExamCard title="Market Insights" className="mt-6">
                 {Object.entries(insights).map(([key, value]) => (
                   <div key={key} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
                     <span style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--color-pencil-dim)' }}>{key.replace(/_/g, ' ')}</span>
                     <span style={{ fontSize: 13, color: 'var(--color-pencil)' }}>{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>
                   </div>
                 ))}
-              </GlassCard>
+              </ExamCard>
             )}
           </div>
         )}

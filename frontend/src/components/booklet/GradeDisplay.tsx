@@ -6,7 +6,7 @@ type Props = {
   max?: number
 }
 
-export default function ScoreRing({ score, label, max = 100 }: Props) {
+export default function GradeDisplay({ score, label, max = 100 }: Props) {
   const pct = Math.round((score / max) * 100)
   const isHigh = pct >= 75
   const isLow = pct < 50

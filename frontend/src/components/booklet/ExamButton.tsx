@@ -7,7 +7,7 @@ type Props = {
   type?: 'button' | 'submit'
 }
 
-export default function PillButton({
+export default function ExamButton({
   children,
   variant = 'ghost',
   onClick,

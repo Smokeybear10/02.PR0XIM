@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import PillButton from '@/components/PillButton'
-import MinimalInput from '@/components/MinimalInput'
+import ExamButton from '@/components/booklet/ExamButton'
+import ExamInput from '@/components/booklet/ExamInput'
 
 type WorkExperience = { id: string; company: string; title: string; startDate: string; endDate: string; description: string }
 type Education = { id: string; school: string; degree: string; field: string; year: string }
@@ -61,11 +61,11 @@ export default function BuilderPage() {
             <SectionHeader title="Personal Info" />
             <div className="exam-form-body">
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-                <MinimalInput label="Full Name" value={name} onChange={setName} placeholder="John Doe" required />
-                <MinimalInput label="Email" value={email} onChange={setEmail} placeholder="john@example.com" type="email" required />
-                <MinimalInput label="Phone" value={phone} onChange={setPhone} placeholder="+1 555 000 0000" type="tel" />
-                <MinimalInput label="Location" value={location} onChange={setLocation} placeholder="San Francisco, CA" />
-                <MinimalInput label="Website" value={website} onChange={setWebsite} placeholder="https://..." type="url" className="col-span-2" />
+                <ExamInput label="Full Name" value={name} onChange={setName} placeholder="John Doe" required />
+                <ExamInput label="Email" value={email} onChange={setEmail} placeholder="john@example.com" type="email" required />
+                <ExamInput label="Phone" value={phone} onChange={setPhone} placeholder="+1 555 000 0000" type="tel" />
+                <ExamInput label="Location" value={location} onChange={setLocation} placeholder="San Francisco, CA" />
+                <ExamInput label="Website" value={website} onChange={setWebsite} placeholder="https://..." type="url" className="col-span-2" />
               </div>
             </div>
           </div>
@@ -73,7 +73,7 @@ export default function BuilderPage() {
           <div className="exam-form-section">
             <SectionHeader title="Professional Summary" />
             <div className="exam-form-body">
-              <MinimalInput value={summary} onChange={setSummary} multiline rows={4} placeholder="Brief overview..." />
+              <ExamInput value={summary} onChange={setSummary} multiline rows={4} placeholder="Brief overview..." />
             </div>
           </div>
 
@@ -87,12 +87,12 @@ export default function BuilderPage() {
                     {experiences.length > 1 && <button onClick={() => rmExp(exp.id)} style={{ fontSize: 10, color: 'rgba(0,0,0,0.3)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-ibm-plex-mono)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Remove</button>}
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                    <MinimalInput label="Company" value={exp.company} onChange={(v) => upExp(exp.id, 'company', v)} placeholder="Company" />
-                    <MinimalInput label="Title" value={exp.title} onChange={(v) => upExp(exp.id, 'title', v)} placeholder="Job title" />
-                    <MinimalInput label="Start" value={exp.startDate} onChange={(v) => upExp(exp.id, 'startDate', v)} placeholder="Jan 2023" />
-                    <MinimalInput label="End" value={exp.endDate} onChange={(v) => upExp(exp.id, 'endDate', v)} placeholder="Present" />
+                    <ExamInput label="Company" value={exp.company} onChange={(v) => upExp(exp.id, 'company', v)} placeholder="Company" />
+                    <ExamInput label="Title" value={exp.title} onChange={(v) => upExp(exp.id, 'title', v)} placeholder="Job title" />
+                    <ExamInput label="Start" value={exp.startDate} onChange={(v) => upExp(exp.id, 'startDate', v)} placeholder="Jan 2023" />
+                    <ExamInput label="End" value={exp.endDate} onChange={(v) => upExp(exp.id, 'endDate', v)} placeholder="Present" />
                   </div>
-                  <div style={{ marginTop: 16 }}><MinimalInput label="Description" value={exp.description} onChange={(v) => upExp(exp.id, 'description', v)} multiline rows={3} placeholder="Key achievements..." /></div>
+                  <div style={{ marginTop: 16 }}><ExamInput label="Description" value={exp.description} onChange={(v) => upExp(exp.id, 'description', v)} multiline rows={3} placeholder="Key achievements..." /></div>
                 </div>
               ))}
             </div>
@@ -108,10 +108,10 @@ export default function BuilderPage() {
                     {education.length > 1 && <button onClick={() => rmEdu(edu.id)} style={{ fontSize: 10, color: 'rgba(0,0,0,0.3)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-ibm-plex-mono)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Remove</button>}
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                    <MinimalInput label="School" value={edu.school} onChange={(v) => upEdu(edu.id, 'school', v)} placeholder="University" />
-                    <MinimalInput label="Degree" value={edu.degree} onChange={(v) => upEdu(edu.id, 'degree', v)} placeholder="B.S." />
-                    <MinimalInput label="Field" value={edu.field} onChange={(v) => upEdu(edu.id, 'field', v)} placeholder="Computer Science" />
-                    <MinimalInput label="Year" value={edu.year} onChange={(v) => upEdu(edu.id, 'year', v)} placeholder="2023" />
+                    <ExamInput label="School" value={edu.school} onChange={(v) => upEdu(edu.id, 'school', v)} placeholder="University" />
+                    <ExamInput label="Degree" value={edu.degree} onChange={(v) => upEdu(edu.id, 'degree', v)} placeholder="B.S." />
+                    <ExamInput label="Field" value={edu.field} onChange={(v) => upEdu(edu.id, 'field', v)} placeholder="Computer Science" />
+                    <ExamInput label="Year" value={edu.year} onChange={(v) => upEdu(edu.id, 'year', v)} placeholder="2023" />
                   </div>
                 </div>
               ))}
@@ -128,10 +128,10 @@ export default function BuilderPage() {
                     {projects.length > 1 && <button onClick={() => rmProj(p.id)} style={{ fontSize: 10, color: 'rgba(0,0,0,0.3)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-ibm-plex-mono)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Remove</button>}
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                    <MinimalInput label="Name" value={p.name} onChange={(v) => upProj(p.id, 'name', v)} placeholder="Project" />
-                    <MinimalInput label="Link" value={p.link} onChange={(v) => upProj(p.id, 'link', v)} placeholder="https://..." type="url" />
+                    <ExamInput label="Name" value={p.name} onChange={(v) => upProj(p.id, 'name', v)} placeholder="Project" />
+                    <ExamInput label="Link" value={p.link} onChange={(v) => upProj(p.id, 'link', v)} placeholder="https://..." type="url" />
                   </div>
-                  <div style={{ marginTop: 16 }}><MinimalInput label="Description" value={p.description} onChange={(v) => upProj(p.id, 'description', v)} multiline rows={2} placeholder="What you built..." /></div>
+                  <div style={{ marginTop: 16 }}><ExamInput label="Description" value={p.description} onChange={(v) => upProj(p.id, 'description', v)} multiline rows={2} placeholder="What you built..." /></div>
                 </div>
               ))}
             </div>
@@ -140,15 +140,15 @@ export default function BuilderPage() {
           <div className="exam-form-section">
             <SectionHeader title="Skills" />
             <div className="exam-form-body">
-              <MinimalInput value={skills} onChange={setSkills} multiline rows={3} placeholder="TypeScript, React, Python, AWS..." />
+              <ExamInput value={skills} onChange={setSkills} multiline rows={3} placeholder="TypeScript, React, Python, AWS..." />
             </div>
           </div>
         </div>
 
         <div style={{ marginTop: 24 }}>
-          <PillButton onClick={handleGenerate} disabled={!name || !email || generating} variant="filled" fullWidth>
+          <ExamButton onClick={handleGenerate} disabled={!name || !email || generating} variant="filled" fullWidth>
             {generating ? 'Generating...' : 'Generate Resume'}
-          </PillButton>
+          </ExamButton>
         </div>
       </div>
     </div>

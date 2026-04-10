@@ -7,7 +7,7 @@ type Props = {
   accept?: string
 }
 
-export default function FileUpload({ onFileSelect, accept = '.pdf,.docx' }: Props) {
+export default function PaperUpload({ onFileSelect, accept = '.pdf,.docx' }: Props) {
   const [fileName, setFileName] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)

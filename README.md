@@ -1,5 +1,7 @@
 # DR4FT | AI Resume Optimizer
 
+**Live demo: [proj-dr4ft.vercel.app](https://proj-dr4ft.vercel.app/)**
+
 Beat the ATS. Land the interview. DR4FT analyzes resumes against real applicant tracking systems using NLP and Google Gemini, surfaces skill gaps, scores formatting, and generates optimized resumes from scratch.
 
 ## Quick Start
@@ -31,28 +33,27 @@ Open `http://localhost:2200`
 
 ## What It Does
 
-**Analyzer** -- Upload a PDF or DOCX resume, select a target job category and role. Two analysis modes:
-- **Standard**: NLP-based scoring across ATS compatibility, keyword matching, formatting, and section structure. Extracts personal info, education, experience, projects, and skills. Returns per-section scores and actionable suggestions.
-- **AI**: Sends resume text to Google Gemini for deep evaluation -- overall quality, strengths, weaknesses, ATS score, skill gaps, course recommendations, and role alignment.
+**Analyzer** — Upload a PDF or DOCX resume, select a target job category and role. Two analysis modes:
+- **Standard**: NLP-based scoring across ATS compatibility, keyword matching, formatting, and section structure. Returns per-section scores and actionable suggestions.
+- **AI**: Sends resume text to Google Gemini for deep evaluation — overall quality, strengths, weaknesses, ATS score, and skill gaps.
 
-**Builder** -- Guided form to construct a resume from scratch. Personal info, summary, work experience, education, projects, skills. Five templates: Modern, Classic, Minimal, Technical, Executive.
+**Builder** — Guided form to construct a resume from scratch. Personal info, summary, work experience, education, projects, skills. Five templates: Modern, Classic, Minimal, Technical, Executive.
 
-**Job Search** -- Multi-portal aggregation across LinkedIn, Indeed, Naukri, Foundit, FreshersWorld, TimesJobs, and Instahyre. Returns direct search links with market insights on trending skills, top locations, and salary ranges.
+**Jobs** — Multi-portal aggregation across LinkedIn, Indeed, Naukri, Foundit, FreshersWorld, TimesJobs, and Instahyre. Auto-detects your location. Returns direct search links with market insights on trending skills, top locations, and salary ranges.
 
-**Feedback** -- Rating system with usability and satisfaction sliders. Aggregated stats view.
-
-**Dashboard** -- Analytics on resume submissions, average ATS/keyword scores, high-scoring counts, skill distribution, and weekly trends.
+**About** — Tech stack, capabilities, and course syllabus style overview.
 
 ## Tech Stack
 
 | Layer | Tools |
 |-------|-------|
 | Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4 |
+| Motion | Lenis smooth scroll + GSAP ScrollTrigger |
 | Backend | Python, FastAPI, Pydantic |
-| AI/NLP | Google Gemini (gemini-1.5-flash), NLTK, scikit-learn, spaCy |
-| PDF/Doc | pdfplumber, pypdf, PyPDF2, python-docx, reportlab |
+| AI / NLP | Google Gemini (gemini-1.5-flash), NLTK, scikit-learn, spaCy |
+| PDF / Doc | pdfplumber, pypdf, PyPDF2, python-docx, reportlab |
 | Database | SQLite via SQLAlchemy |
-| Design | Glassmorphism, Oswald + Barlow typography, dark-only |
+| Design | Blue Book exam booklet — Libre Baskerville, IBM Plex Mono, Barlow Condensed |
 
 ## Project Structure
 
@@ -61,31 +62,23 @@ DR4FT/
 ├── frontend/
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── page.tsx              # Landing page
-│   │   │   ├── layout.tsx            # Root layout, fonts, nav, title template
-│   │   │   ├── analyzer/
-│   │   │   │   ├── page.tsx          # Resume analysis (standard + AI)
-│   │   │   │   └── layout.tsx        # DR4FT | Analyzer
-│   │   │   ├── builder/
-│   │   │   │   ├── page.tsx          # Resume builder form
-│   │   │   │   └── layout.tsx        # DR4FT | Builder
-│   │   │   ├── jobs/
-│   │   │   │   ├── page.tsx          # Multi-portal job search
-│   │   │   │   └── layout.tsx        # DR4FT | Job Search
-│   │   │   ├── feedback/
-│   │   │   │   ├── page.tsx          # User feedback
-│   │   │   │   └── layout.tsx        # DR4FT | Feedback
-│   │   │   └── about/
-│   │   │       ├── page.tsx          # About + tech stack
-│   │   │       └── layout.tsx        # DR4FT | About
+│   │   │   ├── page.tsx              # Blue cover + exam paper landing
+│   │   │   ├── layout.tsx            # Root layout, fonts, nav
+│   │   │   ├── globals.css           # Blue Book design system
+│   │   │   ├── analyzer/             # Submit your paper for grading
+│   │   │   ├── builder/              # Draft your resume
+│   │   │   ├── jobs/                 # Job board
+│   │   │   └── about/                # Course syllabus
 │   │   ├── components/
-│   │   │   ├── GlassCard.tsx         # Glassmorphism card primitive
-│   │   │   ├── PillButton.tsx        # Ghost/filled pill buttons
-│   │   │   ├── ScoreRing.tsx         # Animated SVG score visualization
-│   │   │   ├── FileUpload.tsx        # Drag-and-drop file upload
-│   │   │   ├── MinimalInput.tsx      # Underline-style inputs
-│   │   │   ├── Nav.tsx               # Fixed top nav bar
-│   │   │   └── Logo.tsx              # D4 monogram
+│   │   │   ├── Nav.tsx               # Scroll-revealed top nav
+│   │   │   ├── SmoothScroll.tsx      # Lenis scroll initialization
+│   │   │   ├── ScrollReveal.tsx      # GSAP ScrollTrigger animations
+│   │   │   └── booklet/              # Exam booklet UI primitives
+│   │   │       ├── ExamCard.tsx      # Paper-inside-paper card
+│   │   │       ├── ExamButton.tsx    # Dark blue / outline button
+│   │   │       ├── ExamInput.tsx     # Fill-in-the-blank input
+│   │   │       ├── GradeDisplay.tsx  # Score + pass/fail stamp
+│   │   │       └── PaperUpload.tsx   # Submit-your-paper drop zone
 │   │   └── lib/
 │   │       └── api.ts                # Typed API client
 │   └── package.json
@@ -98,7 +91,7 @@ DR4FT/
 │   │   ├── dashboard.py              # /api/dashboard/metrics, /skills, /trends
 │   │   └── auth.py                   # /api/auth/login, /logout
 │   ├── services/
-│   │   ├── analyzer.py               # NLP resume analyzer (keyword, format, section)
+│   │   ├── analyzer.py               # NLP resume analyzer
 │   │   ├── ai_analyzer.py            # Gemini-powered analysis
 │   │   └── resume_builder.py         # Template-based resume generation
 │   ├── models/
@@ -108,12 +101,14 @@ DR4FT/
 │       └── job_roles.py              # 50+ role definitions with required skills
 ├── requirements.txt
 ├── Dockerfile
-└── DESIGN.md                         # Full design system specification
+└── DESIGN.md                         # Blue Book design system specification
 ```
 
 ## Design
 
-Ultra-dark glassmorphism with monochrome palette. No accent colors. Glass cards with `backdrop-blur`, pill-shaped buttons, animated SVG score rings. Oswald for display type, Barlow for body. Dark mode only. Full spec in `DESIGN.md`.
+Blue Book exam booklet. Dark blue cover page (the booklet exterior) transitions into a cream-colored paper interior with ruled lines, red margin annotations, a staple mark, and page numbers. Scores are graded out of 100 with PASS/FAIL stamps. Missing keywords are highlighted in yellow. Your resume IS the exam, and DR4FT is the grader.
+
+Typography: Libre Baskerville (display), IBM Plex Mono (data/labels), Barlow Condensed (buttons/nav). Motion: Lenis smooth scroll + GSAP ScrollTrigger for the pinned cover reveal and paper slide-up. Full spec in `DESIGN.md`.
 
 ## API
 
@@ -126,22 +121,7 @@ All endpoints prefixed with `/api`. Backend runs on port 3200, frontend on 2200.
 | GET | `/api/roles` | All job categories and roles |
 | POST | `/api/jobs/search` | Multi-portal job search |
 | GET | `/api/jobs/insights` | Market trends and salary data |
-| POST | `/api/feedback` | Submit user feedback |
 | GET | `/api/dashboard/metrics` | Resume submission analytics |
-
-## Pre-Ship Checklist
-
-Run these audits in Claude Code before final deploy. Each one is a slash command.
-
-```
-/cso                    # Security audit -- secrets, deps, injection, auth
-/performance            # Load time, bundle size, rendering bottlenecks
-/core-web-vitals        # LCP, INP, CLS scoring and fixes
-/design-consultation    # Verify design system coherence against DESIGN.md
-/web-quality-audit      # Full sweep -- perf, a11y, SEO, best practices
-```
-
-Run order: `/cso` first (fix vulnerabilities before anything else), then `/performance` + `/core-web-vitals` (can run together), then `/design-consultation`, then `/web-quality-audit` as the final pass.
 
 ---
 
