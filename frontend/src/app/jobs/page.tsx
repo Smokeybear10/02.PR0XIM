@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import GlassCard from '@/components/GlassCard'
 import PillButton from '@/components/PillButton'
 import MinimalInput from '@/components/MinimalInput'
@@ -9,123 +9,102 @@ import { searchJobs, getMarketInsights, type JobResult } from '@/lib/api'
 export default function JobsPage() {
   const [query, setQuery] = useState('')
   const [location, setLocation] = useState('')
+  const [detectingLocation, setDetectingLocation] = useState(false)
   const [searching, setSearching] = useState(false)
   const [jobs, setJobs] = useState<JobResult[]>([])
   const [insights, setInsights] = useState<Record<string, unknown> | null>(null)
   const [hasSearched, setHasSearched] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  useEffect(() => {
+    setDetectingLocation(true)
+    fetch('https://ipapi.co/json/')
+      .then((r) => r.json())
+      .then((d) => { if (d.city && d.region) setLocation(`${d.city}, ${d.region}`) })
+      .catch(() => {})
+      .finally(() => setDetectingLocation(false))
+  }, [])
+
   const handleSearch = async () => {
     if (!query) return
-    setSearching(true)
-    setError(null)
-
+    setSearching(true); setError(null)
     try {
-      const [jobResults, insightData] = await Promise.all([
-        searchJobs(query, location),
-        getMarketInsights().catch(() => null),
-      ])
-      setJobs(jobResults)
-      setInsights(insightData)
-      setHasSearched(true)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Search failed')
-    } finally {
-      setSearching(false)
-    }
+      const [jobResults, insightData] = await Promise.all([searchJobs(query, location), getMarketInsights().catch(() => null)])
+      setJobs(jobResults); setInsights(insightData); setHasSearched(true)
+    } catch (e) { setError(e instanceof Error ? e.message : 'Search failed') }
+    finally { setSearching(false) }
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div className="space-y-2 stagger-1">
-        <p className="label">Career Discovery</p>
-        <h1 className="font-display text-3xl font-semibold tracking-wider text-text-primary uppercase">
-          Job Search
-        </h1>
-      </div>
-
-      <GlassCard className="stagger-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <MinimalInput
-            label="Keywords"
-            value={query}
-            onChange={setQuery}
-            placeholder="Software Engineer"
-            required
-          />
-          <MinimalInput
-            label="Location"
-            value={location}
-            onChange={setLocation}
-            placeholder="San Francisco, CA"
-          />
+    <div className="tool-wrapper">
+      <div className="tool-paper">
+        <div className="tool-header">
+          <div className="tool-header-kicker">Career Research</div>
+          <h1 className="tool-header-title">Job Search</h1>
         </div>
-        <div className="mt-6">
+
+        <GlassCard>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
+            <MinimalInput label="Keywords" value={query} onChange={setQuery} placeholder="Software Engineer" required />
+            <div>
+              <MinimalInput label="Location" value={detectingLocation ? 'Detecting...' : location} onChange={setLocation} placeholder="San Francisco, CA" />
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.geolocation.getCurrentPosition(
+                    async (pos) => {
+                      try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`, { headers: { Accept: 'application/json' } })
+                        const data = await res.json()
+                        const city = data.address?.city || data.address?.town || data.address?.village || ''
+                        const state = data.address?.state || ''
+                        if (city) setLocation(`${city}${state ? `, ${state}` : ''}`)
+                      } catch {}
+                    }, () => {}, { enableHighAccuracy: true }
+                  )
+                }}
+                style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-cover)', background: 'none', border: 'none', cursor: 'pointer', marginTop: 6, padding: 0 }}
+              >
+                Use precise location
+              </button>
+            </div>
+          </div>
           <PillButton onClick={handleSearch} disabled={!query || searching} variant="filled" fullWidth>
             {searching ? 'Searching...' : 'Search Jobs'}
           </PillButton>
-        </div>
-      </GlassCard>
-
-      {error && (
-        <GlassCard>
-          <p className="text-score-low text-sm font-body text-center">{error}</p>
         </GlassCard>
-      )}
 
-      {hasSearched && (
-        <div className="space-y-5 animate-fade-up">
-          <p className="label">{jobs.length} portals found</p>
+        {error && <div style={{ marginTop: 16, padding: 12, border: '1px solid rgba(185,28,28,0.2)', textAlign: 'center' }}><p style={{ color: '#B91C1C', fontSize: 13 }}>{error}</p></div>}
 
-          {jobs.map((job, i) => (
-            <GlassCard key={i} interactive>
-              <div className="flex items-center justify-between gap-4">
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="font-display text-xs font-semibold tracking-[0.2em] uppercase"
-                      style={{ color: job.color }}
-                    >
-                      {job.portal}
-                    </span>
-                  </div>
-                  <p className="text-text-secondary text-sm font-body">{job.title}</p>
+        {hasSearched && (
+          <div style={{ marginTop: 32 }}>
+            <p style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-pencil-dim)', marginBottom: 16 }}>{jobs.length} portals found</p>
+            {jobs.map((job, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid rgba(0,0,0,0.06)', transition: 'background 0.3s' }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(0,0,0,0.02)')} onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}>
+                <div>
+                  <span style={{ fontFamily: 'var(--font-label)', fontWeight: 800, fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase', color: job.color }}>{job.portal}</span>
+                  <p style={{ fontSize: 14, color: 'var(--color-pencil)', marginTop: 2 }}>{job.title}</p>
                 </div>
-                <a
-                  href={job.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="pill-btn px-5 py-1.5 text-xs text-text-secondary shrink-0"
-                >
-                  View Jobs
-                  <span className="sr-only"> on {job.portal} (opens in new tab)</span>
+                <a href={job.url} target="_blank" rel="noopener noreferrer" className="btn-exam-outline" style={{ padding: '6px 16px', fontSize: 10 }}>
+                  View<span className="sr-only"> on {job.portal}</span>
                 </a>
               </div>
-            </GlassCard>
-          ))}
-
-          {insights && (
-            <GlassCard title="Market Insights">
-              <div className="space-y-3">
+            ))}
+            {insights && (
+              <GlassCard title="Market Insights" className="mt-6">
                 {Object.entries(insights).map(([key, value]) => (
-                  <div key={key} className="flex justify-between py-2 border-b border-border-subtle last:border-0">
-                    <span className="label">{key.replace(/_/g, ' ')}</span>
-                    <span className="text-text-secondary text-sm font-body">
-                      {typeof value === 'object' ? JSON.stringify(value) : String(value)}
-                    </span>
+                  <div key={key} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+                    <span style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--color-pencil-dim)' }}>{key.replace(/_/g, ' ')}</span>
+                    <span style={{ fontSize: 13, color: 'var(--color-pencil)' }}>{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>
                   </div>
                 ))}
-              </div>
-            </GlassCard>
-          )}
-        </div>
-      )}
-
-      {!hasSearched && (
-        <div className="text-center py-20">
-          <p className="text-text-muted text-sm font-body">Enter search parameters to begin</p>
-        </div>
-      )}
+              </GlassCard>
+            )}
+          </div>
+        )}
+        {!hasSearched && <div style={{ textAlign: 'center', padding: '64px 0' }}><p style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.2)' }}>Enter search parameters to begin</p></div>}
+      </div>
     </div>
   )
 }

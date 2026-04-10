@@ -1,19 +1,29 @@
 import type { Metadata, Viewport } from 'next'
-import { Oswald, Barlow } from 'next/font/google'
+import { Libre_Baskerville, IBM_Plex_Mono, Barlow_Condensed } from 'next/font/google'
 import './globals.css'
 import Nav from '@/components/Nav'
+import SmoothScroll from '@/components/SmoothScroll'
+import ScrollReveal from '@/components/ScrollReveal'
 
-const oswald = Oswald({
+const libreBaskerville = Libre_Baskerville({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-oswald',
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-libre-baskerville',
   display: 'swap',
 })
 
-const barlow = Barlow({
+const ibmPlexMono = IBM_Plex_Mono({
   subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-barlow',
+  weight: ['400', '500', '600'],
+  variable: '--font-ibm-plex-mono',
+  display: 'swap',
+})
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ['latin'],
+  weight: ['600', '700', '800'],
+  variable: '--font-barlow-condensed',
   display: 'swap',
 })
 
@@ -41,12 +51,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${oswald.variable} ${barlow.variable}`}>
-      <body className="min-h-screen bg-bg-dark">
+    <html
+      lang="en"
+      className={`${libreBaskerville.variable} ${ibmPlexMono.variable} ${barlowCondensed.variable}`}
+    >
+      <body>
         <Nav />
-        <main className="max-w-6xl mx-auto px-6 pt-20 pb-20">
-          {children}
-        </main>
+        <main className="w-full">{children}</main>
+        <SmoothScroll />
+        <ScrollReveal />
       </body>
     </html>
   )

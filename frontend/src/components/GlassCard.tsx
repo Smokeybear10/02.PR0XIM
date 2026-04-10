@@ -7,10 +7,8 @@ type Props = {
 
 export default function GlassCard({ title, children, className, interactive }: Props) {
   return (
-    <div className={`glass ${interactive ? 'glass-interactive' : ''} p-6 ${className ?? ''}`}>
-      {title && (
-        <h3 className="label mb-4">{title}</h3>
-      )}
+    <div className={`exam-card ${interactive ? 'transition-colors duration-300 hover:bg-[#F5F2EA]' : ''} ${className ?? ''}`}>
+      {title && <div className="exam-card-title">{title}</div>}
       {children}
     </div>
   )

@@ -22,11 +22,11 @@ export default function MinimalInput({
   className,
 }: Props) {
   return (
-    <div className={`space-y-2 ${className ?? ''}`}>
+    <div className={`flex flex-col gap-1 ${className ?? ''}`}>
       {label && (
-        <label className="label block">
+        <label className="exam-input-label">
           {label}
-          {required && <span className="text-text-primary ml-1">*</span>}
+          {required && <span style={{ color: '#B91C1C', marginLeft: 4 }}>*</span>}
         </label>
       )}
       {multiline ? (
@@ -36,7 +36,7 @@ export default function MinimalInput({
           placeholder={placeholder}
           rows={rows}
           required={required}
-          className="input-minimal resize-none"
+          className="exam-input resize-none"
         />
       ) : (
         <input
@@ -45,7 +45,7 @@ export default function MinimalInput({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           required={required}
-          className="input-minimal"
+          className="exam-input"
         />
       )}
     </div>

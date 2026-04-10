@@ -20,11 +20,7 @@ export default function PillButton({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`
-        ${variant === 'filled' ? 'pill-btn-filled' : 'pill-btn'}
-        px-8 py-3 text-sm font-medium tracking-wider
-        ${fullWidth ? 'w-full' : ''}
-      `}
+      className={`${variant === 'filled' ? 'btn-exam' : 'btn-exam-outline'} ${fullWidth ? 'w-full' : ''}`}
     >
       {children}
     </button>

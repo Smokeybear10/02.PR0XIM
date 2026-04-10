@@ -7,86 +7,83 @@
 - **Project type:** Next.js web app with FastAPI backend
 
 ## Aesthetic Direction
-- **Direction:** Monogram Minimal, inspired by V3RSUS design language
-- **Decoration level:** Minimal with intentional glassmorphism
-- **Mood:** Ultra-dark, muted, premium. Like a private members' club for your career. Content floats on glass over void.
-- **Deliberate departures from category:**
-  1. Giant monogram typography as background texture (not decorative, atmospheric)
-  2. Pill-shaped ghost buttons instead of standard filled rectangles
-  3. Glass cards with backdrop blur instead of solid surfaces
-  4. No sidebar, top nav only, content breathes
+- **Direction:** Academic Brutalist — editorial serif meets raw data, research paper meets career tool
+- **Decoration level:** Zero ornament. Structure IS the decoration. Paper grain for texture.
+- **Mood:** Scholarly confidence. Like a well-typeset research paper with the scroll experience of igloo.inc. Instrument Serif headlines give it editorial weight. Barlow Condensed labels keep it functional. JetBrains Mono data keeps it precise.
+- **References:** R1VER (Lenis + GSAP scroll, Instrument Serif), PAINT (paper grain, editorial serif), pudding.cool (data narrative)
+- **Departures from category:**
+  1. Cream base (#F5F0EB) instead of dark mode — most career tools are dark, this stands out
+  2. Thick 2px border grid instead of cards — borders define sections, not shadows
+  3. Instrument Serif for display — academic editorial, not the typical tech sans-serif
+  4. Numbered sections (01, 02, 03) like journal chapters
+  5. Paper grain overlay for physical texture
+  6. Lenis smooth scroll + GSAP ScrollTrigger for cinematic pacing
+  7. No rounded corners anywhere — everything is 0px radius
 
 ## Typography
-- **Display/Hero:** Oswald (sans-serif condensed), weights 300-700
-  - Hero: clamp(3rem, 7vw, 4.5rem), weight 600, tracking wider, uppercase
-  - H1: 1.875rem (30px), weight 600, tracking wider, uppercase
-  - H2: 1.5rem (24px), weight 600, tracking wider, uppercase
-- **Body:** Barlow (sans-serif), weights 300-600
-  - Body: 0.875rem (14px), weight 400, line-height relaxed
-  - Small: 0.75rem (12px), weight 400
-- **Labels:** Oswald, 0.625rem (10px), weight 400, uppercase, letter-spacing 0.25em, text-muted color
-- **Data/Tables:** Barlow with tabular-nums
-- **Code:** JetBrains Mono (fallback only, not primary)
-- **Loading:** `@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap')`
-- **Scale:** Labels(10px) Small(12px) Body(14px) H2(24px) H1(30px) Hero(clamp 48-72px) Monogram(clamp 200-500px)
+- **Display/Hero:** Instrument Serif (serif), weight 400, italic for emphasis
+  - Hero: clamp(72px, 10vw, 140px), line-height 1.05
+  - Section headers: clamp(40px, 5vw, 68px)
+- **Labels:** Barlow Condensed, weight 600-700, 11px, letter-spacing 0.28em, uppercase
+- **Body:** Barlow, weight 400, 15-17px, line-height 1.8
+- **Data/Numbers:** JetBrains Mono, weight 400, 11px, letter-spacing 0.05em
+- **Stat numbers:** Barlow Condensed 900, clamp(60px, 7vw, 88px)
+- **Score numbers:** Barlow Condensed 900, 72px
+- **Loading:** Google Fonts — Instrument Serif (400, italic) + Barlow Condensed (400-900) + Barlow (300-600) + JetBrains Mono (400,500)
 
 ## Color
-- **Approach:** Restrained. Monochrome with opacity-based hierarchy. No accent color. Light text on void.
-- **Backgrounds:**
-  - `--bg-dark: #080a10` -- page background (near-black with blue undertone)
-  - `--bg-card: rgba(12, 16, 26, 0.65)` -- glass card surfaces
-  - `--bg-hover: rgba(255, 255, 255, 0.03)` -- subtle hover states
-  - `--accent: rgba(240, 240, 248, 0.08)` -- active/selected states
-- **Text:**
-  - `--text-primary: rgba(240, 240, 248, 0.85)` -- headings, primary content
-  - `--text-secondary: rgba(240, 240, 248, 0.5)` -- body text, descriptions
-  - `--text-muted: rgba(240, 240, 248, 0.25)` -- labels, captions, placeholders
-- **Borders:**
-  - `--border-subtle: rgba(255, 255, 255, 0.06)` -- card borders, dividers
-  - `--border-focus: rgba(255, 255, 255, 0.2)` -- focus states, hover borders
-- **Semantic:**
-  - `--score-high: #4ade80` -- scores >= 75%
-  - `--score-mid: #fbbf24` -- scores 50-74%
-  - `--score-low: rgba(240, 240, 248, 0.3)` -- scores < 50%
-- **Dark mode only.** No light mode variant.
+- **Base:** `--cream: #F5F0EB` — warm off-white page background
+- **Deep cream:** `--cream-deep: #EDE8E2` — slightly darker variant for hover states
+- **Ink:** `--ink: #0D0D0B` — near-black for text and borders
+- **Saffron:** `--saffron: #E8971A` — primary accent, hero title highlight, CTA hover
+- **Danger:** `--danger: #C9321F` — low scores, missing keywords
+- **Success:** `--success: #1B6B3A` — high scores, file uploaded
+- **Text hierarchy:**
+  - Primary: `#0D0D0B` (ink)
+  - Secondary: `rgba(13, 13, 11, 0.55)`
+  - Labels: `rgba(13, 13, 11, 0.4)`
+  - Muted: `rgba(13, 13, 11, 0.25)`
+- **Light mode only.** No dark mode variant.
+- **Score tiers:** danger (< 50%) | mid (50-74%) | good (≥ 75%)
 
 ## Spacing
 - **Base unit:** 4px
-- **Density:** Spacious, generous whitespace
-- **Card padding:** 24px (p-6)
-- **Section gaps:** 32px (space-y-8)
-- **Content max-width:** 72rem (max-w-6xl) with 24px horizontal padding
-- **Page top padding:** 112px (pt-28, accounts for fixed nav)
-- **Page bottom padding:** 80px (pb-20)
+- **Nav height:** 60px (CSS var: `--nav-height`)
+- **Page content:** `max-width: 1100px`, `padding: nav+48px 48px 80px`
+- **Card padding:** 28px
+- **Section padding:** 64-96px (hero), 80px (content sections)
+- **Form field gap:** 24px
 
 ## Layout
-- **Approach:** Grid-disciplined, centered content
-- **Navigation:** Fixed top bar, 64px height, glass background with blur
-  - Brand left (Oswald, semibold, tracking-wider, uppercase)
-  - Links right (Oswald, 0.75rem, tracking 0.2em, uppercase)
-  - No sidebar
-- **Grid:** 1-4 columns responsive (grid-cols-1 md:grid-cols-2 lg:grid-cols-3/4)
-- **Max content width:** 72rem (1152px) for most pages, 64rem (1024px) for forms
-- **Border radius:** 16px on glass cards, 100px (pill) on buttons, 50% on circular elements, 0 on inputs
+- **Navigation:** Fixed top bar, 60px, 2px border-bottom solid ink. Brand left (bordered right), links right, CTA far right (ink bg, saffron hover). No blur.
+- **Grid:** CSS grid with 2px border lines as design element
+- **Border radius:** 0 everywhere
+- **Max content width:** 1100px for tool pages, 1200-1400px for home sections
+- **Hero:** 2-column grid (55/45) — headline left, stats right, all divided by 2px borders
 
 ## Motion
-- **Approach:** Intentional, minimal
-- **fadeUp:** opacity 0->1, translateY 16px->0, 0.4s ease-out (page transitions, results appearing)
-- **scoreIn:** SVG stroke-dashoffset animation, 1s ease-out (score ring fill)
-- **Transitions:** all 0.2s ease on borders, colors, backgrounds (hover states)
-- **Forbidden:** No bounce, no spring, no pulse, no shake, no scroll-driven animations
+- **Smooth scroll:** Lenis (duration 1.2, exponential easing) — handles all scroll behavior
+- **Scroll engine:** GSAP ScrollTrigger — drives all scroll-triggered animations
+- **Page-load:** `loadUp` / `loadRight` with stagger classes `.load-1` through `.load-5`
+- **Scroll reveal:** GSAP `gsap.from()` with ScrollTrigger. `data-animate="up|left|right|scale|counter"` + `data-delay="N"`. Easing: `power3.out`, duration: 0.8-0.9s
+- **Counters:** `data-animate="counter" data-count="N"` — GSAP tween from 0 to N on scroll enter
+- **Score bars:** `.score-bar-fill[data-bar="N"]` — GSAP width tween, 1.4s power3.out
+- **Hero parallax:** stat blocks drift upward at different rates during scroll (scrub: 0.6)
+- **CTA entrance:** left content slides from -60x, right from +60x on scroll enter
+- **Hover:** `transition: background 0.15s` on interactive elements
+- **Easing:** `cubic-bezier(0.22, 1, 0.36, 1)` for load, `power3.out` for scroll
 
 ## UI Patterns
-- **Glass cards:** bg-card + 1px border-subtle + 16px radius + backdrop-blur(20px). Hover brightens border to rgba(255,255,255,0.1).
-- **Pill buttons (ghost):** Transparent bg, 1px border rgba(255,255,255,0.15), radius 100px, Oswald uppercase. Hover adds rgba(255,255,255,0.05) bg.
-- **Pill buttons (filled):** text-primary bg, #080a10 text, radius 100px, Oswald uppercase. Hover inverts to ghost.
-- **Inputs:** Transparent bg, bottom-border only 1px rgba(255,255,255,0.1), Barlow 14px. Focus brightens border to rgba(255,255,255,0.35).
-- **Labels:** Oswald 10px, uppercase, letter-spacing 0.25em, text-muted. Used as section headers inside glass cards.
-- **Tabs:** Oswald 12px, tracking 0.2em, uppercase, bottom border-2. Active = text-primary + border-text-primary. Inactive = text-muted + border-transparent.
-- **Score rings:** SVG circle, 4px stroke, animated dashoffset. Color mapped to score tier (high/mid/low).
-- **Monogram:** Oswald, weight 900 (black), clamp(200px, 30vw, 500px), rgba(240,240,248,0.025). Centered, pointer-events none, aria-hidden.
-- **File upload:** Glass card with upload icon in circular border, click or drag-drop.
-- **Skill tags:** Pill button style used as read-only tags for skills/keywords.
+- **Brut card:** `background: #FAF7F2, border: 1px solid rgba(13,13,11,0.12), padding: 28px`. Title as `.brut-card-title`. Hover: background darkens slightly.
+- **Brut button (filled):** `background: #0D0D0B, border: 2px solid #0D0D0B, color: cream`. Hover: saffron bg + ink text.
+- **Brut button (outline):** `background: transparent, border: 2px solid rgba(13,13,11,0.3)`. Hover: full border opacity + subtle bg.
+- **Brut input:** `border-bottom: 2px solid rgba(13,13,11,0.15)` only, no other borders. Focus: ink color.
+- **Brut select:** Same as input + custom chevron SVG.
+- **Score display:** Label (label-caps) → big number (72px, colored) → 3px bar track + animated fill.
+- **Tags:** `border: 2px solid` + Barlow Condensed 700 12px uppercase. Danger variant: red border/text.
+- **Upload zone:** `border: 2px dashed` — solid when file present (success color).
+- **Page headers:** `border-bottom: 2px solid ink`, kicker label + big stacked title.
+- **Tabs:** `border-bottom: 3px solid` active indicator on a 2px base line.
 
 ## Decisions Log
 | Date | Decision | Rationale |
@@ -94,6 +91,9 @@
 | 2026-04-01 | Terminal Mode selected | User chose after reviewing 3 options. |
 | 2026-04-02 | Terminal Mode rejected | User said "I don't like the terminal design." |
 | 2026-04-02 | Monogram Minimal selected | User chose Option A (V3RSUS-inspired) from 3 new design options. |
-| 2026-04-02 | Full frontend rebuild | All pages, components, and CSS rebuilt with Monogram Minimal design system. |
-| 2026-04-02 | Renamed to DR4FT | Product renamed from SmartCV to DR4FT across frontend, backend, and config. |
-| 2026-04-02 | DESIGN.md updated | Formalized Monogram Minimal system to match implemented code. |
+| 2026-04-02 | Full frontend rebuild | All pages, components, and CSS rebuilt with Monogram Minimal. |
+| 2026-04-02 | Renamed to DR4FT | Product renamed from SmartCV to DR4FT. |
+| 2026-04-09 | Warm Brutalist selected | User chose Option C from /design-shotgun. Complete rebuild — discard Monogram Minimal. |
+| 2026-04-09 | Scroll animations added | Lenis smooth scroll + GSAP ScrollTrigger. Same stack as R1VER. |
+| 2026-04-09 | Academic editorial direction | Instrument Serif display, JetBrains Mono data, paper grain, numbered sections. |
+| 2026-04-09 | Light mode palette | Cream base — deliberate break from dark-mode-heavy category. |
