@@ -18,6 +18,17 @@
   --font-mono: var(--font-ibm-plex-mono), 'IBM Plex Mono', monospace;
   --font-label: var(--font-barlow-condensed), 'Barlow Condensed', sans-serif;
   --font-body: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
+  /* Student's handwriting — answers, teacher's marginalia, grade marks */
+  --font-hand: var(--font-caveat), 'Caveat', 'Bradley Hand', cursive;
+  /* The teacher's (or exam printer's) typewriter — question text, official stamps */
+  --font-typewriter: var(--font-special-elite), 'Special Elite', 'Courier Prime', monospace;
+
+  /* Ink colors — matched to what actually appears on a blue book exam */
+  --color-ink-blue: #1c2b52;       /* student's blue ballpoint */
+  --color-ink-red: #b4242a;         /* teacher's red pen */
+  --color-ink-red-faded: #983036;
+  --color-pencil-deep: #3a3630;     /* where pencil presses hard */
+  --color-paper-shadow: rgba(32,28,22,0.06);
 }
 
 :root {
@@ -124,19 +135,184 @@ input:focus, textarea:focus, select:focus { outline: none; }
 .exam-nav-cta:hover { background: #fde68a; transform: translateY(-1px); }
 
 /* ============================================================
+   BOOKLET STAGE — 3D container for the book-opening effect
+   ============================================================ */
+
+.booklet-stage {
+  position: relative;
+  perspective: 2400px;
+  perspective-origin: 50% 35%;
+  transform-style: preserve-3d;
+  background: var(--color-cover-deep);
+}
+
+/* ONE scroll stage holds the entire booklet experience: cover flip + all page flips.
+   Everything lives in a single sticky pin, so the pages are physically underneath
+   the cover from the start. When the cover flips open, it reveals the first page
+   that was already there. Each subsequent page flip reveals the next page waiting
+   underneath. No "scroll-over" transitions. */
+.book-scroll-stage {
+  position: relative;
+  width: 100%;
+  height: 520vh;
+}
+
+.book-stage-pin {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── THE BOOK ─── a physical-sized rectangle centered in the viewport.
+   Perspective lives here so all the 3D rotation is relative to the book
+   itself, not the viewport. The book takes up most of the vertical height. */
+.book-page-frame {
+  position: relative;
+  height: min(1100px, 96vh);
+  aspect-ratio: 0.82;
+  max-width: 92vw;
+  perspective: 1800px;
+  perspective-origin: 65% 45%;
+  transform-style: preserve-3d;
+  box-shadow:
+    0 2px 0 rgba(0,0,0,0.25),
+    0 28px 60px -16px rgba(0,0,0,0.55),
+    0 54px 140px -40px rgba(0,0,0,0.5);
+}
+
+/* Paper underlayer — sits beneath the cover so when the cover swings open, paper is revealed */
+.cover-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  z-index: 1;
+  background: var(--color-paper);
+  background-image:
+    /* faint rule lines like the paper page inside */
+    repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      rgba(100, 140, 200, 0.06) 31px,
+      rgba(100, 140, 200, 0.06) 32px
+    ),
+    /* warm vignette so the revealed page feels deep */
+    radial-gradient(
+      ellipse at 62% 40%,
+      rgba(255, 248, 220, 0.35) 0%,
+      rgba(253, 251, 245, 0) 60%
+    );
+  box-shadow:
+    inset 56px 0 80px -40px rgba(0,0,0,0.18),   /* binding shadow on the left */
+    inset -24px 0 40px -32px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* A hint of the paper's left red margin line — as if the page has been there all along */
+.cover-backdrop::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 92px;
+  width: 1px;
+  background: rgba(200, 80, 80, 0.12);
+}
+
+/* The deep crease shadow right at the binding — gets stronger mid-rotation */
+.cover-backdrop::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  background: linear-gradient(
+    to right,
+    rgba(0,0,0,0.22) 0%,
+    rgba(0,0,0,0.08) 50%,
+    transparent 100%
+  );
+}
+
+/* ============================================================
    COVER PAGE — the blue booklet exterior
    ============================================================ */
 
 .cover-page {
-  min-height: 100vh;
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 80px 40px;
-  position: relative;
+  padding: clamp(48px, 7%, 88px) clamp(28px, 5%, 56px);
+  z-index: 20;
   background: linear-gradient(170deg, var(--color-cover-deep) 0%, var(--color-cover) 40%, var(--color-cover-light) 100%);
+  transform-origin: 0% 50%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+  box-shadow:
+    inset 14px 0 28px -8px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(0,0,0,0.2);
+}
+
+/* Binding — the stitched left edge of the blue book */
+.cover-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 34px;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    linear-gradient(
+      to right,
+      rgba(0,0,0,0.5) 0%,
+      rgba(0,0,0,0.25) 35%,
+      rgba(0,0,0,0.08) 65%,
+      transparent 100%
+    );
+}
+
+.cover-spine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 8px;
+  width: 1px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.08) 0px,
+    rgba(255,255,255,0.08) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+
+.cover-spine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 14px;
+  width: 1px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.05) 0px,
+    rgba(255,255,255,0.05) 8px,
+    transparent 8px,
+    transparent 16px
+  );
 }
 
 /* Cover texture — cardboard feel */
@@ -175,11 +351,11 @@ input:focus, textarea:focus, select:focus { outline: none; }
 .cover-line-field {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: rgba(255,255,255,0.25);
-  letter-spacing: 0.1em;
+  gap: 10px;
+  font-family: var(--font-typewriter);
+  font-size: 11px;
+  color: rgba(255,255,255,0.38);
+  letter-spacing: 0.22em;
   text-transform: uppercase;
 }
 
@@ -190,19 +366,19 @@ input:focus, textarea:focus, select:focus { outline: none; }
 }
 
 .cover-tag {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.35em;
+  font-family: var(--font-typewriter);
+  font-size: 11px;
+  letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.42);
 }
 
 .cover-title {
   font-family: var(--font-serif);
-  font-size: clamp(44px, 7vw, 88px);
+  font-size: clamp(32px, 5.5vw, 58px);
   font-weight: 700;
   color: white;
-  line-height: 1.12;
+  line-height: 1.1;
 }
 
 .cover-title em {
@@ -212,18 +388,21 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
 .cover-sub {
   font-family: var(--font-serif);
-  font-size: 18px;
+  font-size: clamp(14px, 1.3vw, 17px);
   font-style: italic;
-  color: rgba(255,255,255,0.45);
-  max-width: 480px;
+  color: rgba(255,255,255,0.5);
+  max-width: 420px;
+  line-height: 1.55;
 }
 
 .cover-meta {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: rgba(255,255,255,0.25);
+  font-family: var(--font-typewriter);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.34);
   display: flex;
-  gap: 32px;
+  gap: 36px;
 }
 
 .cover-btn {
@@ -261,11 +440,11 @@ input:focus, textarea:focus, select:focus { outline: none; }
 }
 
 .scroll-hint span {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.25em;
+  font-family: var(--font-typewriter);
+  font-size: 11px;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.35);
 }
 
 @keyframes scrollDot {
@@ -292,6 +471,931 @@ input:focus, textarea:focus, select:focus { outline: none; }
   position: relative;
   z-index: 10;
   box-shadow: 0 -8px 60px rgba(0,0,0,0.25);
+  will-change: transform, opacity;
+  transform-origin: 50% 0%;
+}
+
+/* ============================================================
+   BOOK PAGES — stacked flipbook, sitting under the cover
+   ============================================================ */
+
+.book-page {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0% 50%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* Cast shadow that sweeps across a page as the page ABOVE it flips open.
+   Sits on top of the content but below z:20 (the cover).
+   Controlled by GSAP — starts/ends invisible, peaks mid-flip. */
+.book-page-reveal-shadow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0;
+  background: linear-gradient(
+    95deg,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.32) 25%,
+    rgba(0, 0, 0, 0.14) 55%,
+    rgba(0, 0, 0, 0.04) 80%,
+    transparent 100%
+  );
+  mix-blend-mode: multiply;
+  will-change: opacity, transform;
+}
+
+.book-page.page-1 { z-index: 6; }
+.book-page.page-2 { z-index: 5; }
+.book-page.page-3 { z-index: 4; }
+.book-page.page-4 { z-index: 3; }
+
+/* ─── THE PAPER SHEET ─── fills the full viewport, edge-to-edge.
+   Warm cream stock, subtle age marks, soft vignette. */
+.book-page-inner {
+  position: relative;
+  background:
+    radial-gradient(
+      ellipse at 20% 10%,
+      rgba(200, 175, 130, 0.07) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 85% 90%,
+      rgba(120, 95, 60, 0.05) 0%,
+      transparent 50%
+    ),
+    var(--color-paper);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: var(--color-ink);
+}
+
+/* ─── PAGE HEADER BAND ─── full-width cream band at the top of each page.
+   Opaque so the ruled lines behind it don't bleed through; acts as the
+   "header area" of a real exam booklet with the question booklet info. */
+.book-page-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: clamp(22px, 3%, 34px) clamp(40px, 6%, 64px) clamp(12px, 1.6%, 18px) clamp(92px, 12%, 132px);
+  background: var(--color-paper);
+  border-bottom: 1px solid rgba(30, 22, 16, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--font-typewriter);
+  font-size: clamp(9px, 0.8vw, 11px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(30, 22, 16, 0.6);
+  z-index: 3;
+}
+
+.book-page-header-left,
+.book-page-header-right {
+  white-space: nowrap;
+}
+
+/* Remove the ::before bullet from the right header part */
+.book-page-header-right::before { content: none; }
+
+.book-page-header-left,
+.book-page-header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.book-page-header-right::before {
+  content: '•';
+  color: rgba(30, 22, 16, 0.3);
+  margin-right: 4px;
+}
+
+/* ─── CONTENT COLUMN ─── starts just below the header band. */
+.book-page-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  padding: clamp(76px, 9%, 112px) clamp(36px, 6%, 64px) clamp(36px, 4.5%, 56px) clamp(94px, 12%, 128px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 12px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ─── INLINE SCORE ─── the teacher's grade, written at the bottom-right of
+   the question in red pen. Sits in the flex flow so it can never overlap
+   anything. */
+.exam-score-mark {
+  align-self: flex-end;
+  margin-top: clamp(12px, 2%, 24px);
+  padding: 0 4px 6px;
+  font-family: var(--font-hand);
+  font-size: clamp(32px, 2.8vw, 48px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-ink-red);
+  transform: rotate(-3deg);
+  letter-spacing: 0.02em;
+  position: relative;
+  white-space: nowrap;
+}
+
+.exam-score-mark::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -2px;
+  right: -2px;
+  height: 2.5px;
+  background: var(--color-ink-red);
+  opacity: 0.8;
+  transform: rotate(1.2deg);
+  border-radius: 2px;
+}
+
+/* ─── EXAM PAGE TOP LABEL ─── "QUESTION N · X POINTS" — typewriter, underlined */
+.exam-q-label {
+  font-family: var(--font-typewriter);
+  font-size: clamp(11px, 0.95vw, 14px);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  padding-bottom: 6px;
+  margin-bottom: 2px;
+  border-bottom: 1.5px solid rgba(30, 22, 16, 0.55);
+  display: inline-block;
+  align-self: flex-start;
+  line-height: 1.4;
+}
+
+/* ─── PRINTED QUESTION TEXT ─── typewriter prompt text. */
+.exam-q-text {
+  font-family: var(--font-typewriter);
+  font-size: clamp(14px, 1.05vw, 17px);
+  line-height: 36px;   /* sits on every ruled line */
+  color: var(--color-ink);
+  letter-spacing: 0.005em;
+}
+
+.exam-q-text em {
+  font-style: normal;
+  border-bottom: 1.5px solid rgba(30, 22, 16, 0.45);
+  padding-bottom: 1px;
+}
+
+/* ─── PARTS LIST ─── (a), (b), (c), (d) style sub-questions */
+.exam-parts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-typewriter);
+  font-size: clamp(13px, 0.95vw, 15px);
+  line-height: 36px;
+  color: var(--color-ink);
+}
+
+.exam-parts li {
+  padding-left: 38px;
+  position: relative;
+}
+
+.exam-parts li::before {
+  content: attr(data-label);
+  position: absolute;
+  left: 0;
+  color: rgba(30, 22, 16, 0.7);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* A small "Answer:" label before the student's handwritten block. */
+.exam-answer-label {
+  font-family: var(--font-typewriter);
+  font-size: clamp(11px, 0.85vw, 13px);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(30, 22, 16, 0.65);
+  margin-top: 4px;
+}
+
+/* ─── STUDENT'S HANDWRITTEN ANSWER ─── blue ballpoint. Each line sits on
+   a ruled line (line-height 36px matches the ruled spacing). */
+.exam-answer {
+  font-family: var(--font-hand);
+  font-size: clamp(18px, 1.45vw, 24px);
+  line-height: 36px;
+  color: var(--color-ink-blue);
+  font-weight: 500;
+  position: relative;
+}
+
+.exam-answer-list {
+  font-family: var(--font-hand);
+  font-size: clamp(18px, 1.45vw, 24px);
+  line-height: 36px;
+  color: var(--color-ink-blue);
+  font-weight: 500;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.exam-answer-list li {
+  padding-left: 38px;
+  position: relative;
+}
+
+.exam-answer-list li::before {
+  content: attr(data-label);
+  position: absolute;
+  left: 0;
+  font-family: var(--font-typewriter);
+  font-size: 0.7em;
+  color: rgba(30, 22, 16, 0.55);
+  top: 2px;
+  letter-spacing: 0;
+}
+
+/* ─── TEACHER'S HANDWRITTEN MARGIN NOTE ─── red pen, angled, with a red
+   vertical rule on the left. */
+.exam-teacher-note {
+  position: relative;
+  font-family: var(--font-hand);
+  font-size: clamp(16px, 1.25vw, 21px);
+  line-height: 1.3;
+  color: var(--color-ink-red);
+  font-weight: 600;
+  transform: rotate(-1deg);
+  align-self: flex-end;
+  max-width: 80%;
+  padding: 2px 4px 2px 14px;
+  margin-top: 8px;
+  text-align: left;
+}
+
+.exam-teacher-note::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 2px;
+  bottom: 2px;
+  width: 2px;
+  background: var(--color-ink-red);
+  opacity: 0.7;
+  border-radius: 2px;
+}
+
+/* ─── STUDENT STRIKETHROUGH ─── teacher crossed it out in red */
+.exam-strike {
+  text-decoration: line-through;
+  text-decoration-color: var(--color-ink-red);
+  text-decoration-thickness: 2.5px;
+  text-underline-offset: 0;
+  color: rgba(28, 43, 82, 0.5);
+}
+
+/* ─── TEACHER'S RED INK INSERT ─── handwritten correction after a strike */
+.exam-ink-red {
+  font-family: var(--font-hand);
+  color: var(--color-ink-red);
+  font-weight: 600;
+  font-size: 1em;
+  padding: 0 4px;
+}
+
+/* ─── CIRCLED BY THE TEACHER ─── red oval around a term */
+.exam-circled {
+  position: relative;
+  display: inline-block;
+  padding: 2px 10px;
+  color: var(--color-ink-red);
+}
+
+.exam-circled::before {
+  content: '';
+  position: absolute;
+  inset: -4px -6px;
+  border: 2px solid var(--color-ink-red);
+  border-radius: 60% 40% 55% 45% / 50% 50% 50% 50%;
+  transform: rotate(-3deg);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* ─── TEACHER'S CHECKMARK + X MARKS ─── */
+.exam-check,
+.exam-xmark {
+  font-family: var(--font-hand);
+  color: var(--color-ink-red);
+  font-weight: 700;
+  font-size: 1.25em;
+  padding-left: 8px;
+  vertical-align: -0.05em;
+}
+
+.exam-check::before { content: '✓'; }
+.exam-xmark::before { content: '✗'; }
+
+/* ─── STAMP BLOCK ─── for FINAL GRADE page, a big red rubber stamp. */
+.stamp-block {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 34px 16px;
+  border: 3px solid var(--color-ink-red);
+  color: var(--color-ink-red);
+  font-family: var(--font-typewriter);
+  font-weight: 400;
+  font-size: clamp(13px, 1.15vw, 17px);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+  opacity: 0.88;
+  background: transparent;
+  position: relative;
+}
+
+.stamp-block::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--color-ink-red);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.stamp-block-date {
+  font-size: 0.6em;
+  letter-spacing: 0.2em;
+  opacity: 0.8;
+}
+
+/* ─── BIG HAND-WRITTEN FINAL GRADE ─── massive red pen grade */
+.exam-final-grade {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  color: var(--color-ink-red);
+  font-size: clamp(96px, 12vw, 180px);
+  line-height: 0.9;
+  position: relative;
+  display: inline-block;
+  letter-spacing: -0.02em;
+  transform: rotate(-3deg);
+}
+
+.exam-final-grade::after {
+  content: '';
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  bottom: 12%;
+  height: 6px;
+  background: var(--color-ink-red);
+  opacity: 0.7;
+  transform: rotate(-2deg);
+  border-radius: 3px;
+}
+
+/* ─── GRADER'S SIGNATURE ─── handwritten */
+.exam-signature {
+  font-family: var(--font-hand);
+  font-style: italic;
+  font-size: clamp(20px, 1.7vw, 28px);
+  color: var(--color-ink-red);
+  line-height: 1.3;
+  transform: rotate(-2deg);
+  display: inline-block;
+}
+
+/* ─── HANDWRITTEN CTA BUTTON ─── on page 4 */
+.exam-retake-btn {
+  align-self: flex-start;
+  font-family: var(--font-label);
+  font-weight: 800;
+  font-size: clamp(13px, 1.05vw, 15px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 16px 36px;
+  background: var(--color-cover-deep);
+  color: white;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.35s, transform 0.35s;
+}
+
+.exam-retake-btn:hover {
+  background: var(--color-cover);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--color-ink-red);
+}
+
+.book-page-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      transparent,
+      transparent 35px,
+      rgba(82, 120, 170, 0.18) 35px,
+      rgba(82, 120, 170, 0.18) 36px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Red margin line — the classic "where teachers write corrections" rule.
+   Positioned in line with the content's left indent. */
+.book-page-inner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: clamp(76px, 10%, 108px);
+  width: 1px;
+  background: rgba(190, 70, 70, 0.3);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.book-page-inner > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Dark binding shadow along the left — the spine side of the page */
+.book-page-binding {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: clamp(32px, 7%, 56px);
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.25) 0%,
+    rgba(0, 0, 0, 0.08) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.book-page-num {
+  position: absolute;
+  bottom: clamp(24px, 3.5vh, 48px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-pencil-dim);
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .book-page-inner { padding: 48px 32px 72px 72px; }
+}
+
+/* ============================================================
+   PRODUCT CONTENT — the book pages now sell DR4FT.
+   Typography borrows the exam aesthetic but the content is real.
+   ============================================================ */
+
+.product-eyebrow {
+  font-family: var(--font-typewriter);
+  font-size: clamp(10px, 0.82vw, 12px);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(30, 22, 16, 0.5);
+  display: inline-block;
+  padding-bottom: 4px;
+  border-bottom: 1.5px solid rgba(30, 22, 16, 0.3);
+  align-self: flex-start;
+  margin-bottom: clamp(4px, 1%, 12px);
+}
+
+.product-headline {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 3.4vw, 48px);
+  font-weight: 700;
+  line-height: 1.12;
+  color: var(--color-ink);
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+
+.product-body {
+  font-family: var(--font-serif);
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.65;
+  color: rgba(30, 22, 16, 0.78);
+  max-width: 58ch;
+}
+
+.product-note {
+  font-family: var(--font-hand);
+  font-size: clamp(19px, 1.55vw, 26px);
+  color: var(--color-ink-red);
+  font-weight: 600;
+  transform: rotate(-1.5deg);
+  display: inline-block;
+  line-height: 1.2;
+}
+
+/* Massive statistic — breaks out of the ruled grid for emphasis */
+.product-stat {
+  font-family: var(--font-serif);
+  font-size: clamp(84px, 10vw, 148px);
+  font-weight: 700;
+  line-height: 0.85;
+  color: var(--color-ink-red);
+  letter-spacing: -0.04em;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.product-stat-sub {
+  font-family: var(--font-serif);
+  font-size: clamp(17px, 1.6vw, 24px);
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.3;
+  max-width: 34ch;
+  letter-spacing: -0.005em;
+}
+
+/* Two-column layout used on pages where we want a big visual on the
+   left paired with body text on the right (like page 1). */
+.product-split {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 1.6fr;
+  gap: clamp(20px, 3%, 40px);
+  align-items: start;
+}
+
+.product-split-right {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.6%, 18px);
+}
+
+/* Small uppercase typewriter sub-label (like "Why they fail:") */
+.product-sub-label {
+  font-family: var(--font-typewriter);
+  font-size: clamp(10px, 0.82vw, 12px);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(30, 22, 16, 0.58);
+  padding-bottom: 3px;
+  border-bottom: 1px dashed rgba(30, 22, 16, 0.3);
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+/* Bullet list on product pages */
+.product-bullets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.55;
+  color: rgba(30, 22, 16, 0.78);
+}
+
+.product-bullets li {
+  padding-left: 22px;
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.product-bullets li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--color-ink-red);
+  font-weight: 700;
+}
+
+/* Inline "supports" row — clean typewriter line with em-dash separators */
+.product-supports {
+  font-family: var(--font-typewriter);
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: rgba(30, 22, 16, 0.7);
+  margin-top: 2px;
+}
+
+.product-supports strong {
+  color: var(--color-ink);
+  font-weight: 400;
+}
+
+/* ── Rubric table (page 3) ──
+   A proper grading rubric: row-per-criterion, weight on the right,
+   total row at the bottom. Looks like an actual exam rubric sheet. */
+.product-rubric-table {
+  display: flex;
+  flex-direction: column;
+  border-top: 2px solid var(--color-ink);
+}
+
+.product-rubric-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: clamp(14px, 1.8%, 24px);
+  padding: clamp(8px, 1.2%, 14px) clamp(4px, 0.8%, 10px);
+  border-bottom: 1px solid rgba(30, 22, 16, 0.15);
+  align-items: baseline;
+}
+
+.product-rubric-row-main { min-width: 0; }
+
+.product-rubric-row-title {
+  font-family: var(--font-serif);
+  font-size: clamp(15px, 1.25vw, 20px);
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: -0.005em;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.product-rubric-row-body {
+  font-family: var(--font-serif);
+  font-size: clamp(12px, 0.92vw, 14px);
+  line-height: 1.45;
+  color: rgba(30, 22, 16, 0.72);
+}
+
+.product-rubric-row-weight {
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 1.8vw, 28px);
+  font-weight: 700;
+  color: var(--color-ink-red);
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  text-align: right;
+}
+
+.product-rubric-row-weight small {
+  display: block;
+  font-family: var(--font-typewriter);
+  font-size: 0.4em;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(30, 22, 16, 0.5);
+  margin-top: 3px;
+}
+
+.product-rubric-total {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: clamp(16px, 2%, 28px);
+  padding: clamp(12px, 1.6%, 16px) clamp(4px, 1%, 12px);
+  border-top: 2px solid var(--color-ink);
+  align-items: baseline;
+}
+
+.product-rubric-total-label {
+  font-family: var(--font-typewriter);
+  font-size: clamp(11px, 0.88vw, 13px);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  font-weight: 400;
+}
+
+.product-rubric-total-value {
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 2.4vw, 38px);
+  font-weight: 700;
+  color: var(--color-ink-red);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* Trust-signal row on page 4 */
+.product-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  font-family: var(--font-typewriter);
+  font-size: clamp(11px, 0.9vw, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(30, 22, 16, 0.6);
+  margin-top: clamp(8px, 1.5%, 18px);
+}
+
+.product-trust span {
+  position: relative;
+  padding-left: 18px;
+}
+
+.product-trust span::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--color-ink-red);
+  font-weight: 700;
+}
+
+/* Numbered step list */
+.product-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2.6%, 32px);
+  counter-reset: step;
+}
+
+.product-steps li {
+  counter-increment: step;
+  padding-left: clamp(54px, 6%, 72px);
+  position: relative;
+  min-height: 54px;
+}
+
+.product-steps li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 2.6vw, 40px);
+  font-weight: 700;
+  color: var(--color-ink-red);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-style: italic;
+}
+
+.product-step-title {
+  font-family: var(--font-serif);
+  font-size: clamp(19px, 1.6vw, 24px);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin-bottom: 4px;
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+}
+
+.product-step-body {
+  font-family: var(--font-serif);
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.55;
+  color: rgba(30, 22, 16, 0.75);
+}
+
+/* 2×2 grading rubric */
+.product-rubric {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 2%, 24px) clamp(20px, 3%, 40px);
+}
+
+.product-rubric-item {
+  padding: clamp(14px, 1.8%, 22px) 0 clamp(14px, 1.8%, 22px) clamp(14px, 1.8%, 20px);
+  border-left: 2px solid var(--color-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-rubric-weight {
+  font-family: var(--font-typewriter);
+  font-size: clamp(10px, 0.8vw, 12px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-ink-red);
+}
+
+.product-rubric-title {
+  font-family: var(--font-serif);
+  font-size: clamp(17px, 1.4vw, 22px);
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: -0.005em;
+}
+
+.product-rubric-body {
+  font-family: var(--font-serif);
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.5;
+  color: rgba(30, 22, 16, 0.7);
+}
+
+/* Product CTA button (page 4) */
+.product-cta {
+  align-self: flex-start;
+  font-family: var(--font-label);
+  font-weight: 800;
+  font-size: clamp(14px, 1.1vw, 17px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: clamp(18px, 2%, 22px) clamp(32px, 4%, 48px);
+  background: var(--color-cover-deep);
+  color: white;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  transition: background 0.35s, transform 0.35s, box-shadow 0.35s;
+  margin-top: clamp(12px, 2%, 24px);
+}
+
+.product-cta:hover {
+  background: var(--color-cover);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--color-ink-red);
+}
+
+.product-cta-fine {
+  font-family: var(--font-typewriter);
+  font-size: clamp(11px, 0.9vw, 13px);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(30, 22, 16, 0.55);
+  margin-top: clamp(6px, 1.2%, 14px);
+}
+
+/* Light adjustments inside the constrained book-page content column */
+
+.book-page-content .exam-header {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+}
+
+.book-page-content .q-text {
+  font-size: clamp(22px, 2.4vw, 34px);
+  line-height: 1.3;
+}
+
+.book-page-content .page-divider {
+  margin: 0 0 28px;
+}
+
+.book-page-content .final-grade {
+  margin-top: 28px;
+  padding-top: 28px;
+}
+
+.book-page-content .final-grade-mark {
+  font-size: clamp(44px, 4.4vw, 64px);
+}
+
+.book-page-content .exam-table .val {
+  font-size: clamp(20px, 1.6vw, 26px);
+}
+
+/* Shadow cast by the cover onto the backdrop page as the book opens */
+.backdrop-shadow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    rgba(0, 0, 0, 0.42) 0%,
+    rgba(0, 0, 0, 0.28) 25%,
+    rgba(0, 0, 0, 0.12) 50%,
+    transparent 78%
+  );
+  opacity: 0.9;
+  mix-blend-mode: multiply;
+  will-change: opacity, transform;
 }
 
 /* Binding shadow on left edge */
