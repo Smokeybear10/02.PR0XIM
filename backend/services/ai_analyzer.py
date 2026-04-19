@@ -1,19 +1,21 @@
 import os
 import re
+import json
 import tempfile
 import logging
+import requests
 from dotenv import load_dotenv
-import google.generativeai as genai
 
 logger = logging.getLogger(__name__)
+
+XAI_BASE_URL = "https://api.x.ai/v1"
 
 
 class AIResumeAnalyzer:
     def __init__(self):
         load_dotenv()
-        self.google_api_key = os.getenv("GOOGLE_API_KEY")
-        if self.google_api_key:
-            genai.configure(api_key=self.google_api_key)
+        self.xai_api_key = os.getenv("XAI_API_KEY")
+        self.xai_model = os.getenv("XAI_MODEL", "grok-4-fast-non-reasoning")
 
     def extract_text_from_pdf(self, pdf_file) -> str:
         text = ""
@@ -99,7 +101,7 @@ class AIResumeAnalyzer:
         os.unlink(temp_path)
         return text
 
-    def analyze_resume_with_gemini(
+    def analyze_resume_with_ai(
         self,
         resume_text: str,
         job_description: str | None = None,
@@ -108,91 +110,87 @@ class AIResumeAnalyzer:
         if not resume_text:
             return {"error": "Resume text is required for analysis."}
 
-        if not self.google_api_key:
-            return {"error": "Google API key is not configured. Please add it to your .env file."}
+        if not self.xai_api_key:
+            return {"error": "XAI_API_KEY is not configured. Add it to your .env file."}
+
+        system_prompt = (
+            "You are a senior resume reviewer with deep knowledge of ATS systems, "
+            "industry hiring standards, and modern tech / business roles. You return "
+            "strictly valid JSON matching the requested schema."
+        )
+
+        role_line = f"The candidate is targeting: {job_role}." if job_role else ""
+        jd_line = f"\nTarget job description:\n{job_description}\n" if job_description else ""
+
+        user_prompt = f"""Analyze this resume and return ONE JSON object with this exact shape:
+
+{{
+  "resume_score": <integer 0-100 overall quality>,
+  "ats_score": <integer 0-100 ATS parse-ability + keyword match>,
+  "strengths": [<5-7 short, specific strings about what the resume does well>],
+  "weaknesses": [<5-7 short, specific, actionable strings about what to improve>],
+  "analysis": "<markdown report: Overall Assessment, Professional Profile, Skills Analysis, Experience, Education, Role Alignment, ATS Optimization, Recommended Actions. 400-700 words.>"
+}}
+
+Rules:
+- resume_score: holistic quality 0-100, not inflated. Average resumes land 55-70.
+- ats_score: how well it would survive an ATS filter for the target role.
+- strengths / weaknesses must be concrete (cite bullets, sections, metrics), not generic.
+- analysis is markdown only; do NOT include the JSON keys inside analysis.
+- Return ONLY the JSON object. No code fences. No preamble.
+
+{role_line}{jd_line}
+Resume:
+---
+{resume_text}
+---"""
 
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            resp = requests.post(
+                f"{XAI_BASE_URL}/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {self.xai_api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": self.xai_model,
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    "temperature": 0.3,
+                    "response_format": {"type": "json_object"},
+                },
+                timeout=60,
+            )
+        except requests.RequestException as e:
+            return {"error": f"xAI request failed: {e}"}
 
-            base_prompt = f"""
-            You are an expert resume analyst with deep knowledge of industry standards, job requirements, and hiring practices across various fields. Your task is to provide a comprehensive, detailed analysis of the resume provided.
+        if resp.status_code != 200:
+            return {"error": f"xAI returned {resp.status_code}: {resp.text[:300]}"}
 
-            Please structure your response in the following format:
+        try:
+            payload = resp.json()
+            raw = payload["choices"][0]["message"]["content"]
+            data = json.loads(raw)
+        except (KeyError, ValueError, json.JSONDecodeError) as e:
+            logger.error("Failed to parse xAI response: %s", e)
+            return {"error": "xAI returned unparseable output."}
 
-            ## Overall Assessment
-            [Provide a detailed assessment of the resume's overall quality, effectiveness, and alignment with industry standards.]
+        return {
+            "resume_score": self._clamp(data.get("resume_score", 0)),
+            "ats_score": self._clamp(data.get("ats_score", 0)),
+            "strengths": list(data.get("strengths", []))[:7],
+            "weaknesses": list(data.get("weaknesses", []))[:7],
+            "analysis": str(data.get("analysis", "")).strip(),
+        }
 
-            ## Professional Profile Analysis
-            [Analyze the candidate's professional profile, experience trajectory, and career narrative.]
-
-            ## Skills Analysis
-            - **Current Skills**: [List ALL skills the candidate demonstrates, categorized by type.]
-            - **Skill Proficiency**: [Assess the apparent level of expertise in key skills.]
-            - **Missing Skills**: [List important skills that would improve the resume for their target role.]
-
-            ## Experience Analysis
-            [Provide detailed feedback on how well the candidate has presented their experience.]
-
-            ## Education Analysis
-            [Analyze the education section.]
-
-            ## Key Strengths
-            [List 5-7 specific strengths of the resume with detailed explanations.]
-
-            ## Areas for Improvement
-            [List 5-7 specific areas where the resume could be improved with actionable recommendations.]
-
-            ## ATS Optimization Assessment
-            [Analyze how well the resume is optimized for ATS. Provide: "ATS Score: XX/100".]
-
-            ## Recommended Courses/Certifications
-            [Suggest 5-7 specific courses or certifications.]
-
-            ## Resume Score
-            [Provide a score from 0-100. Use this format exactly: "Resume Score: XX/100".]
-
-            Resume:
-            {resume_text}
-            """
-
-            if job_role:
-                base_prompt += f"""
-
-                The candidate is targeting a role as: {job_role}
-
-                ## Role Alignment Analysis
-                [Analyze how well the resume aligns with the target role of {job_role}.]
-                """
-
-            if job_description:
-                base_prompt += f"""
-
-                Additionally, compare this resume to the following job description:
-
-                Job Description:
-                {job_description}
-
-                ## Job Match Analysis
-                [Provide a detailed analysis of how well the resume matches the job description.]
-
-                ## Key Job Requirements Not Met
-                [List specific requirements from the job description that are not addressed in the resume.]
-                """
-
-            response = model.generate_content(base_prompt)
-            analysis = response.text.strip()
-
-            resume_score = self._extract_score_from_text(analysis)
-            ats_score = self._extract_ats_score_from_text(analysis)
-
-            return {
-                "analysis": analysis,
-                "resume_score": resume_score,
-                "ats_score": ats_score,
-            }
-
-        except Exception as e:
-            return {"error": f"Analysis failed: {str(e)}"}
+    @staticmethod
+    def _clamp(v) -> int:
+        try:
+            return max(0, min(int(v), 100))
+        except (TypeError, ValueError):
+            return 0
 
     def _extract_score_from_text(self, analysis_text: str) -> int:
         try:

@@ -108,7 +108,7 @@ async def ai_analyze_resume(
     file: UploadFile = File(...),
     job_role: str = Form(...),
     job_description: str = Form(""),
-    model: str = Form("Google Gemini"),
+    model: str = Form("xAI Grok"),
 ):
     contents = await file.read()
     resume_text = _extract_text(file, contents)
@@ -116,7 +116,7 @@ async def ai_analyze_resume(
     if not resume_text.strip():
         raise HTTPException(status_code=400, detail="Could not extract text from the uploaded file.")
 
-    result = ai_analyzer.analyze_resume_with_gemini(
+    result = ai_analyzer.analyze_resume_with_ai(
         resume_text,
         job_description=job_description or None,
         job_role=job_role,
@@ -125,7 +125,6 @@ async def ai_analyze_resume(
     if result.get("error"):
         raise HTTPException(status_code=500, detail=result["error"])
 
-    # Save to DB
     resume_id = save_resume_data({
         "personal_info": {"full_name": "", "email": "", "phone": ""},
         "target_role": job_role,
@@ -144,6 +143,8 @@ async def ai_analyze_resume(
         ats_score=result.get("ats_score", 0),
         analysis=result.get("analysis", ""),
         model_used=model,
+        strengths=result.get("strengths", []),
+        weaknesses=result.get("weaknesses", []),
     )
 
 

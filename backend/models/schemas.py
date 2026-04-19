@@ -54,7 +54,7 @@ class AIAnalyzeRequest(BaseModel):
     job_role: str
     resume_text: str
     job_description: Optional[str] = None
-    model: str = "Google Gemini"
+    model: str = "xAI Grok"
 
 
 class AIAnalyzeResponse(BaseModel):
@@ -62,6 +62,8 @@ class AIAnalyzeResponse(BaseModel):
     ats_score: int = 0
     analysis: str = ""
     model_used: str = ""
+    strengths: list[str] = []
+    weaknesses: list[str] = []
     error: Optional[str] = None
 
 
