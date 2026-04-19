@@ -207,7 +207,7 @@ export default function Home() {
             fontSize: 9,
             letterSpacing: '0.3em',
             textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.15)',
+            color: 'rgba(255,255,255,0.38)',
             marginTop: 8,
           }}>
             Do not open this booklet until instructed to do so
