@@ -42,9 +42,16 @@ export default function BuilderPage() {
   return (
     <div className="tool-wrapper">
       <div className="tool-paper">
+        <div className="tool-binding" aria-hidden />
+
+        <div className="tool-running-head">
+          <span>DR4FT · Composition</span>
+          <span>Section B · Draft</span>
+        </div>
+
         <div className="tool-header">
-          <div className="tool-header-kicker">Composition</div>
-          <h1 className="tool-header-title">Resume Builder</h1>
+          <div className="tool-header-kicker">Examination Booklet</div>
+          <h1 className="tool-header-title">Resume builder.</h1>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>

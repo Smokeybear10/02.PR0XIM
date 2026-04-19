@@ -47,9 +47,16 @@ export default function JobsPage() {
   return (
     <div className="tool-wrapper">
       <div className="tool-paper">
+        <div className="tool-binding" aria-hidden />
+
+        <div className="tool-running-head">
+          <span>DR4FT · Career Research</span>
+          <span>Section C · Field Notes</span>
+        </div>
+
         <div className="tool-header">
-          <div className="tool-header-kicker">Career Research</div>
-          <h1 className="tool-header-title">Job Search</h1>
+          <div className="tool-header-kicker">Examination Booklet</div>
+          <h1 className="tool-header-title">Job search.</h1>
         </div>
 
         <ExamCard>

@@ -24,9 +24,16 @@ export default function AboutPage() {
   return (
     <div className="tool-wrapper">
       <div className="tool-paper">
+        <div className="tool-binding" aria-hidden />
+
+        <div className="tool-running-head">
+          <span>DR4FT · Course Syllabus</span>
+          <span>Appendix · The Instructor</span>
+        </div>
+
         <div className="tool-header">
-          <div className="tool-header-kicker">Course Syllabus</div>
-          <h1 className="tool-header-title">About DR4FT</h1>
+          <div className="tool-header-kicker">Examination Booklet</div>
+          <h1 className="tool-header-title">About DR4FT.</h1>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 32 }}>
