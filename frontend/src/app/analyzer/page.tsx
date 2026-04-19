@@ -130,7 +130,7 @@ export default function AnalyzerPage() {
 
         {error && (
           <div style={{ marginTop: 16, padding: '12px 16px', border: '1px solid rgba(185,28,28,0.2)', background: 'rgba(185,28,28,0.04)' }}>
-            <p style={{ color: '#B91C1C', fontSize: 14, textAlign: 'center', fontFamily: 'var(--font-ibm-plex-mono)', fontSize: 12 }}>{error}</p>
+            <p style={{ color: '#B91C1C', fontSize: 12, textAlign: 'center', fontFamily: 'var(--font-ibm-plex-mono)' }}>{error}</p>
           </div>
         )}
 
