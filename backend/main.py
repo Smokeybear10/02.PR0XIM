@@ -1,3 +1,5 @@
+import os
+import re
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -14,9 +16,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="DR4FT API", version="1.0.0", lifespan=lifespan)
 
+
+def _cors_origins() -> list[str]:
+    raw = os.getenv("ALLOWED_ORIGINS", "http://localhost:2200")
+    return [o.strip() for o in raw.split(",") if o.strip()]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:2200"],
+    allow_origins=_cors_origins(),
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
